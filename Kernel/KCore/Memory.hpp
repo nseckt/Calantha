@@ -3,5 +3,7 @@
 * SPDX-License-Identifier: BSD-3-Clause
 */
 
-long useless;
+#ifndef CALANTHA_KCORE_MEMORY_HPP
+#define CALANTHA_KCORE_MEMORY_HPP
 
+#endif //CALANTHA_KCORE_MEMORY_HPP

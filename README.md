@@ -1,2 +1,2 @@
 # Calantha
-A work in progress kernel!
+The off-world kernel, for x86-64 architectures.

@@ -4,8 +4,10 @@
 */
 
 #include <Kernel/KCore/Assertions.hpp>
-#include <Kernel/Boot/VGAText.hpp>
+#include <Kernel/Init/VGAText.hpp>
 BEGIN_NAMESPACE(kcore);
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-parameter"
 
 auto __spin_forever() -> void {
   asm volatile ("cli");
@@ -18,8 +20,12 @@ auto __fatal_assertion(const char *msg) -> void {
   term.clearscr();
   term.chcolour(VGAColour::Red, VGAColour::Black);
   term.putstring(msg);
+#else
+  // TODO: print the panic message to the serial debug port
+  // or to a framebuffer
 #endif
   __spin_forever();
 }
 
+#pragma GCC diagnostic pop
 END_NAMESPACE(kcore);

@@ -1,40 +1,54 @@
-ENTRY(_start)
+OUTPUT_FORMAT(elf64-x86-64)
+ENTRY(calantha_init)
 
 PHDRS
 {
-  boot_text PT_LOAD;
-  text PT_LOAD;
-  data PT_LOAD;
-  bss PT_LOAD;
+    limine_requests PT_LOAD;
+    text PT_LOAD;
+    rodata PT_LOAD;
+    data PT_LOAD;
 }
 
 SECTIONS
 {
-	. = 2M;
-    kernel_physical_start_ = .;
+    /* So we get placed in the top 2GB of virtual */
+    . = 0xffffffff80000000;
 
-    .boot_text ALIGN(4K) : AT(ADDR(.boot_text)) {
-        KEEP(*(.multiboot))
-    } :boot_text
+    .limine_requests : {
+        KEEP(*(.limine_requests_start))
+        KEEP(*(.limine_requests))
+        KEEP(*(.limine_requests_end))
+    } :limine_requests
 
-    .text ALIGN(4K) : AT(ADDR(.text)) {
-        *(.text*)
+    . = ALIGN(CONSTANT(MAXPAGESIZE));
+    .text : {
+        *(.text .text.*)
     } :text
 
-    .rodata ALIGN(4K) : AT(ADDR(.rodata)) {
-        *(.rodata*)
+    . = ALIGN(CONSTANT(MAXPAGESIZE));
+    .rodata : {
+        *(.rodata .rodata.*)
+    } :rodata
+
+    .init_array : {
+        __init_array = .;
+        KEEP(*(SORT_BY_INIT_PRIORITY(.init_array.*) SORT_BY_INIT_PRIORITY(.ctors.*)))
+        KEEP(*(.init_array .ctors))
+        __init_array_end = .;
+    } :rodata
+
+    . = ALIGN(CONSTANT(MAXPAGESIZE));
+    .data : {
+        *(.data .data.*)
     } :data
 
-    .data ALIGN(4K) : AT(ADDR(.data)) {
-        *(.data*)
-    } :data
-
-    .bss ALIGN(4K) (NOLOAD) : AT(ADDR(.bss)) {
+    .bss : {
+        *(.bss .bss.*)
         *(COMMON)
-        *(.bss)
-        *(.stack)
-        *(.page_tables)
-    } :bss
+    } :data
 
-    kernel_physical_end_ = .;
+    /DISCARD/ : {
+        *(.eh_frame*)
+        *(.note .note.*)
+    }
 }

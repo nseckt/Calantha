@@ -17,4 +17,8 @@ BEGIN_NAMESPACE(kcore);
 [[noreturn]] auto __spin_forever() -> void;
 
 END_NAMESPACE(kcore);
+#ifdef USING_KCORE_GLOBALLY
+using kcore::__fatal_assertion;
+using kcore::__spin_forever;
+#endif //USING_KCORE_GLOBALLY
 #endif //CALANTHA_KCORE_ASSERTIONS_HPP

@@ -1,5 +1,6 @@
 build
 CMakeLists.txt
+qemu.log
 *.d
 *.slo
 *.lo

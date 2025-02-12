@@ -5,8 +5,8 @@
 
 .code32
 
-.extern init
-.type init, @function
+.extern kernel_init
+.type kernel_init, @function
 
 
 /* Page table entry flags */
@@ -186,11 +186,20 @@ long_mode_start:              ## Start of 64 bit execution.
     mov %ax, %fs
     mov %ax, %gs
 
-    call init
+    #movl $0x2f4b2f4f, (0xb8000)
+    call reload_cr3
+    call kernel_init
 
     cli
 1:
     hlt
     jmp 1b
+
+reload_cr3:
+    pushq %rax
+    mov %cr3, %rax
+    mov %rax, %cr3
+    popq %rax
+    ret
 
 

@@ -2,6 +2,7 @@
 .PHONY: run
 .PHONY: clean
 .PHONY: setup
+.PHONY: debug
 
 LD  = x86_64-elf-ld
 AS  = x86_64-elf-as
@@ -35,11 +36,14 @@ $(TARGET): $(CXX_OBJECTS) $(ASM_OBJECTS)
 	-I. \
 	-include Kernel/Misc/Global.hpp \
 	-ffreestanding \
-	-O0 \
+	-O2 \
 	-Wall \
 	-Wextra \
 	-Werror \
 	-fno-pie \
+	-fno-strict-aliasing \
+	-fno-exceptions \
+	-fno-rtti \
 	-fno-stack-protector \
 	-fno-stack-check \
 	-c $< \
@@ -62,8 +66,14 @@ run-no-image: $(TARGET)
 run: $(IMAGE)
 	qemu-system-x86_64 \
 	-cdrom $(IMAGE)	\
-	-m 256M \
   	-vga std \
+
+debug: $(IMAGE)
+	qemu-system-x86_64 \
+	-cdrom $(IMAGE)	\
+	-serial stdio \
+	-d int,cpu_reset
+	-vga std \
 
 $(IMAGE): $(TARGET)
 	grub-file --is-x86-multiboot2 $(TARGET)
@@ -75,8 +85,8 @@ setup:
 	mkdir -p build/isodir/boot/grub
 
 	# Generate a dummy CMakeLists build script.
-	# This is just so that code completion/clangd can function correctly,
-	# we don't actually use Cmake for the build process.
+	# This is just so that code completion/clangd can function correctly for
+	# editors like Clion. we don't actually use Cmake for the build process.
 	echo 'cmake_minimum_required(VERSION 3.28)' > CMakeLists.txt
 	echo 'project(calantha)' >> CMakeLists.txt
 	echo 'set(CMAKE_CXX_STANDARD 20)' >> CMakeLists.txt

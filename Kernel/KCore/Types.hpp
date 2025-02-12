@@ -30,5 +30,9 @@ using kcore::int64;
 using kcore::int32;
 using kcore::int16;
 using kcore::int8;
+using kcore::uintptr;
+using kcore::intptr;
+using kcore::usize;
+using kcore::byte;
 #endif //USING_KCORE_GLOBALLY
 #endif //CALANTHA_TYPES_HPP

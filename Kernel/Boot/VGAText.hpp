@@ -8,46 +8,55 @@
 
 #if VGA_TEXTMODE_
 #include <Kernel/KCore/Types.hpp>
+#include <Kernel/KCore/ClassTraits.hpp>
 
 #define VGATEXT_ADDR   0xB8000U
 #define VGATEXT_HEIGHT 25
 #define VGATEXT_WIDTH  80
 
-enum class VGA : kcore::uint8 {
-  Black      = 0x00,
-  Blue       = 0x01,
-  Green      = 0x02,
-  Cyan       = 0x03,
-  Red        = 0x04,
-  Magenta    = 0x05,
-  Brown      = 0x06,
-  LightGrey  = 0x07,
-  DarkGrey   = 0x08,
-  LightBlue  = 0x09,
-  LightGreen = 0x0A,
-  LightCyan  = 0x0B,
-  LightRed   = 0x0C,
+using VGAByte  = kcore::uint8;
+using VGAEntry = kcore::uint16;
+
+struct VGAColour final {
+CTA_MAKE_COMPARABLE_MEMBER(VGAColour, val_);
+  enum Value_ : VGAByte {
+    Black      = 0x00,
+    Blue       = 0x01,
+    Green      = 0x02,
+    Cyan       = 0x03,
+    Red        = 0x04,
+    Magenta    = 0x05,
+    Brown      = 0x06,
+    LightGrey  = 0x07,
+    DarkGrey   = 0x08,
+    LightBlue  = 0x09,
+    LightGreen = 0x0A,
+    LightCyan  = 0x0B,
+    LightRed   = 0x0C,
+  };
+
+  static auto create(VGAByte fg, VGAByte bg) -> VGAColour;
+  auto as_entry(VGAByte ch) const -> VGAEntry;
+
+  VGAByte val_ = LightGrey | (Black << 4);
+  constexpr VGAColour(const Value_ v) : val_(v) {}
+  constexpr VGAColour() = default;
 };
 
 class VGATerm {
 public:
-  using Byte  = kcore::uint8;
-  using Entry = kcore::uint16;
-
-  static auto create()                      -> VGATerm;
-  static auto make_colour(Byte fg, Byte bg) -> Byte;
-  static auto make_entry(Byte ch, Byte)     -> Entry;
-
-  auto set_colour(VGA fg, VGA bg) -> VGATerm&;
-  auto putchar(kcore::uint8 ch)   -> VGATerm&;
+  static auto create()            -> VGATerm;
   auto putstring(const char* str) -> VGATerm&;
-  auto feedln(kcore::uint32 amnt) -> VGATerm&;
+  auto putchar(VGAByte ch)        -> VGATerm&;
+  auto feedln()                   -> VGATerm&;
+  auto clearscr()                 -> VGATerm&;
+  auto chcolour(VGAByte, VGAByte) -> VGATerm&;
 private:
   VGATerm() = default;
-  kcore::usize row_;
-  kcore::usize col_;
-  Entry* buff_;
-  Byte colour_;
+  kcore::usize row_{};
+  kcore::usize col_{};
+  VGAEntry* buff_{};
+  VGAColour colour_{};
 };
 
 #endif //VGA_TEXTMODE_

@@ -1,0 +1,35 @@
+This isn't a super comprehensive or detailed list of
+things that need to be done, but it should serve as a good general overview
+of what needs to be done next!
+
+This project is still in its infancy, so there is a LOT to do:
+
+1. find a way to remap the kernel to a higher region of virtual memory.
+   right now I've identity mapped the first 1gb of physical to get us
+   up and running, but remapping will make a lot of things much simpler down the line.
+
+2. Once the kernel is remapped, implement a virtual memory manager that can map
+   and unmap pages, apply page permissions, etc.
+
+3. Get interrupts working. We need to set up an Interrupt Descriptor Table (IDT) so that
+   we can start receiving interrupts from the CPU.
+
+4. Improve the KCore library. A lot. There are a lot of basic data types missing. We need
+   strings, string_views, dynamic arrays, and a simple memory allocator. The allocator can 
+   be simple for now, we can probably just have a static buffer in the kernel somewhere that the
+   allocator manages. 
+
+5. Ask GRUB for a framebuffer using a specific multiboot2 tag, and figure out how to draw to that
+   framebuffer correctly. This will allow us to set up a basic terminal/shell later. For rendering text,
+   we can place a font file somewhere on partition and get GRUB to load it for us. From there we could parse it,
+   and use it to render characters to the framebuffer.
+
+6. Find a good way to debug the kernel. I think qemu has debugger support, but I'm not entirely sure how to
+   set that up.
+
+7. Find some way to unit test the kernel (i have zero fucking clue how we'll do this lol). This is 
+   something to be done much later once we work these other issues out.
+
+There's a lot more. A LOT more. but these are some good starting points.
+The easiest thing to check off the list right now would be improvements to Kcore. It's just general 
+data structures and functionality we need.

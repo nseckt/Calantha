@@ -13,10 +13,7 @@
 #define BEGIN_NAMESPACE(NAME) namespace NAME {
 #define END_NAMESPACE(NAME) }
 #define PAGESIZE 4096
-
-#define CTA_EXPAND_SAFE_IF(COND, ...) do{ if( COND ) __VA_ARGS__ }while(false);
-#define CTA_MACRO_CONCAT_IMPL_(X, Y) X##Y
-#define CTA_MACRO_CONCAT(X, Y) N19_MACRO_CONCAT_IMPL_(X, Y)
-#define CTA_UNIQUE_NAME(X) N19_MACRO_CONCAT(X, __COUNTER__)
+#define ALWAYS_INLINE __attribute__((always_inline))
+#define NEVER_INLINE __attribute__((noinline))
 
 #endif //CALANTHA_GLOBAL_HPP

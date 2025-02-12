@@ -46,16 +46,20 @@ extern "C" void calantha_init() {
     __init_array[i]();
   }
 
+  auto val = get_value(300);
+
   ASSERT(LIMINE_BASE_REVISION_SUPPORTED == true);
   ASSERT(framebuffer_request.response != nullptr);
   ASSERT(framebuffer_request.response->framebuffer_count >= 1);
 
-  // Fetch the first framebuffer.
-  // Note: we assume the framebuffer model is RGB with 32-bit pixels.
-  limine_framebuffer *framebuffer = framebuffer_request.response->framebuffers[0];
-  for (usize i = 0; i < 100; i++) {
-    volatile uint32 *fb_ptr = static_cast<volatile uint32 *>(framebuffer->address);
-    fb_ptr[i * (framebuffer->pitch / 4) + i] = 0xffffff;
+  if(val.has_value()) {
+    // Fetch the first framebuffer.
+    // Note: we assume the framebuffer model is RGB with 32-bit pixels.
+    limine_framebuffer *framebuffer = framebuffer_request.response->framebuffers[0];
+    for (usize i = 0; i < 100; i++) {
+      volatile uint32 *fb_ptr = static_cast<volatile uint32 *>(framebuffer->address);
+      fb_ptr[i * (framebuffer->pitch / 4) + i] = 0xffffff;
+    }
   }
 
   __spin_forever();

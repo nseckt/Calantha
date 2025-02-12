@@ -20,41 +20,49 @@ TARGET      := build/calantha
 IMAGE       := build/calantha.iso
 ARCH        := x86_64
 
+CXX_FLAGS := -ffreestanding \
+	-O2 -Wall -Wextra -Werror \
+	-fno-pie \
+	-fno-strict-aliasing \
+	-fno-exceptions \
+	-fno-rtti \
+	-fno-stack-protector \
+	-fno-stack-check \
+	-fno-PIC \
+	-ffunction-sections \
+	-fdata-sections \
+	-m64 \
+	-march=x86-64 \
+	-mno-80387 \
+	-mno-mmx \
+	-mno-sse \
+	-mno-sse2 \
+	-mno-red-zone \
+	-mcmodel=kernel
+
+LD_FLAGS := -Wl,--build-id=none \
+	-nostdlib \
+	-static \
+	-z max-page-size=0x1000 \
+	-Wl,--gc-sections \
+	-lgcc
+
 all: setup $(TARGET) $(IMAGE)
 
 $(TARGET): $(CXX_OBJECTS) $(ASM_OBJECTS)
 	$(CXX) \
 		-T linker.ld \
 		-o $(TARGET) \
-		-ffreestanding \
-		-O2 \
-		-nostdlib \
+		$(LD_FLAGS) \
+		$(CXX_FLAGS) \
 		$(addprefix build/, $(notdir $(CXX_OBJECTS))) \
 		$(addprefix build/, $(notdir $(ASM_OBJECTS))) \
-		-lgcc
 
 %.o: %.cpp
 	$(CXX) \
 		-std=c++20 \
 		-I. -include Kernel/Misc/Global.hpp \
-		-ffreestanding -O2 -Wall -Wextra -Werror \
-		-fno-pie \
-		-fno-strict-aliasing \
-		-fno-exceptions \
-		-fno-rtti \
-		-fno-stack-protector \
-		-fno-stack-check \
-		-fno-PIC \
-		-ffunction-sections \
-		-fdata-sections \
-		-m64 \
-		-march=x86-64 \
-		-mno-80387 \
-		-mno-mmx \
-		-mno-sse \
-		-mno-sse2 \
-		-mno-red-zone \
-		-mcmodel=kernel \
+		$(CXX_FLAGS) \
 		-c $< \
 		-o build/$(notdir $@)
 

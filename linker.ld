@@ -1,33 +1,34 @@
 OUTPUT_FORMAT(elf64-x86-64)
-ENTRY(calantha_init)
+ENTRY(_start)
 
 PHDRS
 {
-    limine_requests PT_LOAD;
+    boot_text PT_LOAD;
     text PT_LOAD;
     rodata PT_LOAD;
     data PT_LOAD;
+    bss PT_LOAD;
 }
 
 SECTIONS
 {
-    /* So we get placed in the top 2GB of virtual */
-    . = 0xffffffff80000000;
+    . = 2M;
+    kernel_physical_start_ = .;
 
-    .limine_requests : {
-        KEEP(*(.limine_requests_start))
-        KEEP(*(.limine_requests))
-        KEEP(*(.limine_requests_end))
-    } :limine_requests
+    .boot_text : {
+        KEEP(*(.multiboot))
+    } :boot_text
 
     . = ALIGN(CONSTANT(MAXPAGESIZE));
+
     .text : {
-        *(.text .text.*)
+        *(.text*)
     } :text
 
     . = ALIGN(CONSTANT(MAXPAGESIZE));
+
     .rodata : {
-        *(.rodata .rodata.*)
+        *(.rodata*)
     } :rodata
 
     .init_array : {
@@ -38,17 +39,22 @@ SECTIONS
     } :rodata
 
     . = ALIGN(CONSTANT(MAXPAGESIZE));
+
     .data : {
-        *(.data .data.*)
+        *(.data*)
     } :data
 
-    .bss : {
+    .bss ALIGN(4K) (NOLOAD) : {
         *(COMMON)
-        *(.bss .bss.*)
-    } :data
+        *(.bss)
+        *(.stack)
+        *(.page_tables)
+    } :bss
 
     /DISCARD/ : {
         *(.eh_frame*)
         *(.note .note.*)
     }
+
+    kernel_physical_end_ = .;
 }

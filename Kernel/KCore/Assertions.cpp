@@ -4,7 +4,7 @@
 */
 
 #include <Kernel/KCore/Assertions.hpp>
-#include <Kernel/Init/VGAText.hpp>
+#include <Kernel/Boot/VGAText.hpp>
 BEGIN_NAMESPACE(kcore);
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-parameter"

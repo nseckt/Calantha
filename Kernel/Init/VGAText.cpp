@@ -4,7 +4,7 @@
 */
 
 #if VGA_TEXTMODE_
-#include <Kernel/Boot/VGAText.hpp>
+#include <Kernel/Init/VGAText.hpp>
 #include <Kernel/KCore/Memory.hpp>
 
 auto VGATerm::create() -> VGATerm {

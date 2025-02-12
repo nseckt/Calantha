@@ -31,13 +31,6 @@ struct Error {
   using MessageType_ = const char*;
   using CodeType_    = ErrC;
 
-  static auto from(const Error& other) -> Error {
-    Error err;
-    err.code_ = other.code_;
-    err.msg_  = other.msg_;
-    return err;
-  }
-
   MessageType_ msg_ = nullptr;
   CodeType_ code_{};
 
@@ -57,13 +50,33 @@ public:
     return Result_{ kcore::forward<Args>(args)... };
   }
 
+  ALWAYS_INLINE auto value_or(T&& other) const -> ValueType {
+    if(value_) return value_.value();
+    return other;
+  }
+
+  [[nodiscard]] ALWAYS_INLINE auto value() -> T& {
+    return value_.value();
+  }
+
+  [[nodiscard]] ALWAYS_INLINE auto error() -> E& {
+    return error_.value();
+  }
+
+  auto operator->() const -> const T* { return &value_.value(); }
+  auto operator->() -> T*             { return &value_.value(); }
+  auto operator*() const -> const T&  { return value_.value();  }
+  auto operator*() -> T&              { return value_.value();  }
+
+  auto has_value() const -> bool { return value_.has_value(); }
+  explicit operator bool() const { return value_.has_value(); }
+
   Result_(const ValueType& val) : value_(val) {}
-  Result_(ValueType&& val) : value_(kcore::move(val)) {}
-
+  Result_(ValueType&& val)      : value_(kcore::move(val)) {}
   Result_(const ErrorType& err) : error_(err) {}
-  Result_(ErrorType&& err) : error_(kcore::move(err)) {}
+  Result_(ErrorType&& err)      : error_(kcore::move(err)) {}
 
-  Result_(Result_&& other) = default;
+  Result_(Result_&& other)      = default;
   Result_(Result_ const& other) = default;
  ~Result_() = default;
 private:
@@ -87,7 +100,6 @@ using Result = typename ResultDispatch_<T>::Type;
 END_NAMESPACE(kcore);
 #ifdef USING_KCORE_GLOBALLY
 using kcore::Result;
-using kcore::Result_;
 using kcore::ErrC;
 using kcore::Error;
 #endif //USING_KCORE_GLOBALLY

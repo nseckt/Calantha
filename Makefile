@@ -8,81 +8,99 @@ LD  = x86_64-elf-ld
 AS  = x86_64-elf-as
 CC  = x86_64-elf-gcc
 CXX = x86_64-elf-g++
+LIM = limine
 
 CXX_SOURCES := $(shell find Kernel -type f -name "*.cpp")
 ASM_SOURCES := $(shell find Kernel -type f -name "*.S")
 HPP_SOURCES := $(shell find Kernel -type f -name "*.hpp")
+LIMINE_DATA ?= $(shell $(LIM) --print-datadir)
 CXX_OBJECTS := $(CXX_SOURCES:.cpp=.o)
 ASM_OBJECTS := $(ASM_SOURCES:.S=.o)
-TARGET      := build/calantha.bin
+TARGET      := build/calantha
 IMAGE       := build/calantha.iso
+ARCH        := x86_64
 
 all: setup $(TARGET) $(IMAGE)
 
 $(TARGET): $(CXX_OBJECTS) $(ASM_OBJECTS)
 	$(CXX) \
-	-T linker.ld \
-	-o $(TARGET) \
-	-ffreestanding \
-	-O2 \
-	-nostdlib \
-  	$(addprefix build/, $(notdir $(CXX_OBJECTS))) \
- 	$(addprefix build/, $(notdir $(ASM_OBJECTS))) \
- 	-lgcc
+		-T linker.ld \
+		-o $(TARGET) \
+		-ffreestanding \
+		-O2 \
+		-nostdlib \
+		$(addprefix build/, $(notdir $(CXX_OBJECTS))) \
+		$(addprefix build/, $(notdir $(ASM_OBJECTS))) \
+		-lgcc
 
 %.o: %.cpp
 	$(CXX) \
-	-std=c++20 \
-	-I. \
-	-include Kernel/Misc/Global.hpp \
-	-ffreestanding \
-	-O2 \
-	-Wall \
-	-Wextra \
-	-Werror \
-	-fno-pie \
-	-fno-strict-aliasing \
-	-fno-exceptions \
-	-fno-rtti \
-	-fno-stack-protector \
-	-fno-stack-check \
-	-c $< \
-	-o build/$(notdir $@)
+		-std=c++20 \
+		-I. -include Kernel/Misc/Global.hpp \
+		-ffreestanding -O2 -Wall -Wextra -Werror \
+		-fno-pie \
+		-fno-strict-aliasing \
+		-fno-exceptions \
+		-fno-rtti \
+		-fno-stack-protector \
+		-fno-stack-check \
+		-fno-PIC \
+		-ffunction-sections \
+		-fdata-sections \
+		-m64 \
+		-march=x86-64 \
+		-mno-80387 \
+		-mno-mmx \
+		-mno-sse \
+		-mno-sse2 \
+		-mno-red-zone \
+		-mcmodel=kernel \
+		-c $< \
+		-o build/$(notdir $@)
 
 %.o: %.S
 	$(AS) $< -o build/$(notdir $@)
 
 clean:
-	rm build/*.iso build/*.o build/*.bin \
-	build/isodir/boot/calantha.bin &>/dev/null || true
-
-run-no-image: $(TARGET)
-	# NOTE: this doesn't actually work right now!
-	# We need to generate ISO images to run the kernel.
-	# As far as I know qemu doesn't support running multiboot2 kernels
-	# directly, so this MAY never be possible, but I'll leave it here for now.
-	qemu-system-x86_64 -kernel $(TARGET)
+	rm -rf ./build
 
 run: $(IMAGE)
 	qemu-system-x86_64 \
-	-cdrom $(IMAGE)	\
-  	-vga std \
-
-debug: $(IMAGE)
-	qemu-system-x86_64 \
-	-cdrom $(IMAGE)	\
-	-serial stdio \
-	-d int,cpu_reset
-	-vga std \
+		-m 2G \
+		-M q35 \
+		-boot d \
+		-cdrom $(IMAGE)	\
 
 $(IMAGE): $(TARGET)
-	grub-file --is-x86-multiboot2 $(TARGET)
-	cp grub.cfg build/isodir/boot/grub/grub.cfg
-	cp $(TARGET) build/isodir/boot/calantha.bin
-	grub-mkrescue -o build/calantha.iso build/isodir
+	cp -v $(TARGET) build/iso_root/boot/
+	cp -v limine.conf \
+		$(LIMINE_DATA)/limine-bios.sys \
+		$(LIMINE_DATA)/limine-bios-cd.bin \
+		$(LIMINE_DATA)/limine-uefi-cd.bin \
+		build/iso_root/boot/limine/
+
+	cp -v $(LIMINE_DATA)/BOOTX64.EFI build/iso_root/EFI/BOOT/
+	cp -v $(LIMINE_DATA)/BOOTIA32.EFI build/iso_root/EFI/BOOT/
+
+	xorriso -as mkisofs -R -r -J \
+		-b boot/limine/limine-bios-cd.bin \
+		-no-emul-boot \
+ 		-boot-load-size 4 \
+ 		-boot-info-table \
+ 		-hfsplus \
+		-apm-block-size 2048 \
+		--efi-boot \
+		boot/limine/limine-uefi-cd.bin \
+		-efi-boot-part \
+		--efi-boot-image \
+		--protective-msdos-label \
+		build/iso_root -o $(IMAGE)
+
+	$(LIM) bios-install $(IMAGE)
 
 setup:
-	mkdir -p build/isodir/boot/grub
+	mkdir -p build/iso_root/boot/limine
+	mkdir -p build/iso_root/EFI/BOOT
 
 	# Generate a dummy CMakeLists build script.
 	# This is just so that code completion/clangd can function correctly for

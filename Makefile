@@ -77,6 +77,7 @@ run: $(IMAGE)
 		-m 2G \
 		-M q35 \
 		-boot d \
+		-serial stdio \
 		-cdrom $(IMAGE)	\
 
 $(IMAGE): $(TARGET)

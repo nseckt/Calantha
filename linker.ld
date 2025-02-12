@@ -43,8 +43,8 @@ SECTIONS
     } :data
 
     .bss : {
-        *(.bss .bss.*)
         *(COMMON)
+        *(.bss .bss.*)
     } :data
 
     /DISCARD/ : {

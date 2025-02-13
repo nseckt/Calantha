@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2025 Diago Lima and the Calantha contributors
+* Copyright (c) 2025 Diago Lima
 * SPDX-License-Identifier: BSD-3-Clause
 */
 

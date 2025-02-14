@@ -1,10 +1,10 @@
 /*
-* Copyright (c) 2025 Diago Lima and the Calantha contributors
+* Copyright (c) 2025 Diago Lima
 * SPDX-License-Identifier: BSD-3-Clause
 */
 
 #include <Kernel/KCore/Assertions.hpp>
-#include <Kernel/Init/VGAText.hpp>
+#include <Kernel/Boot/VGAText.hpp>
 BEGIN_NAMESPACE(kcore);
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-parameter"

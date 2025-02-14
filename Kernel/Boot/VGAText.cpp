@@ -1,10 +1,10 @@
 /*
-* Copyright (c) 2025 Diago Lima and the Calantha contributors
+* Copyright (c) 2025 Diago Lima
 * SPDX-License-Identifier: BSD-3-Clause
 */
 
 #if VGA_TEXTMODE_
-#include <Kernel/Init/VGAText.hpp>
+#include <Kernel/Boot/VGAText.hpp>
 #include <Kernel/KCore/Memory.hpp>
 
 auto VGATerm::create() -> VGATerm {

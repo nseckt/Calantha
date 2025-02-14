@@ -8,15 +8,13 @@ LD  = x86_64-elf-ld
 AS  = x86_64-elf-as
 CC  = x86_64-elf-gcc
 CXX = x86_64-elf-g++
-LIM = limine
 
 CXX_SOURCES := $(shell find Kernel -type f -name "*.cpp")
 ASM_SOURCES := $(shell find Kernel -type f -name "*.S")
 HPP_SOURCES := $(shell find Kernel -type f -name "*.hpp")
-LIMINE_DATA ?= $(shell $(LIM) --print-datadir)
 CXX_OBJECTS := $(CXX_SOURCES:.cpp=.o)
 ASM_OBJECTS := $(ASM_SOURCES:.S=.o)
-TARGET      := build/calantha
+TARGET      := build/calantha.bin
 IMAGE       := build/calantha.iso
 ARCH        := x86_64
 
@@ -72,44 +70,22 @@ $(TARGET): $(CXX_OBJECTS) $(ASM_OBJECTS)
 clean:
 	rm -rf ./build
 
-run: $(IMAGE)
+run: setup $(TARGET) $(IMAGE)
 	qemu-system-x86_64 \
 		-m 2G \
-		-M q35 \
 		-boot d \
+		-vga std \
 		-serial stdio \
 		-cdrom $(IMAGE)	\
 
 $(IMAGE): $(TARGET)
-	cp -v $(TARGET) build/iso_root/boot/
-	cp -v limine.conf \
-		$(LIMINE_DATA)/limine-bios.sys \
-		$(LIMINE_DATA)/limine-bios-cd.bin \
-		$(LIMINE_DATA)/limine-uefi-cd.bin \
-		build/iso_root/boot/limine/
-
-	cp -v $(LIMINE_DATA)/BOOTX64.EFI build/iso_root/EFI/BOOT/
-	cp -v $(LIMINE_DATA)/BOOTIA32.EFI build/iso_root/EFI/BOOT/
-
-	xorriso -as mkisofs -R -r -J \
-		-b boot/limine/limine-bios-cd.bin \
-		-no-emul-boot \
- 		-boot-load-size 4 \
- 		-boot-info-table \
- 		-hfsplus \
-		-apm-block-size 2048 \
-		--efi-boot \
-		boot/limine/limine-uefi-cd.bin \
-		-efi-boot-part \
-		--efi-boot-image \
-		--protective-msdos-label \
-		build/iso_root -o $(IMAGE)
-
-	$(LIM) bios-install $(IMAGE)
+	grub-file --is-x86-multiboot2 $(TARGET)
+	cp -v grub.cfg build/isodir/boot/grub/grub.cfg
+	cp -v $(TARGET) build/isodir/boot/calantha.bin
+	grub-mkrescue -o build/calantha.iso build/isodir
 
 setup:
-	mkdir -p build/iso_root/boot/limine
-	mkdir -p build/iso_root/EFI/BOOT
+	mkdir -p build/isodir/boot/grub
 
 	# Generate a dummy CMakeLists build script.
 	# This is just so that code completion/clangd can function correctly for

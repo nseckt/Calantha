@@ -1,0 +1,11 @@
+/*
+* Copyright (c) 2025 Diago Lima
+* SPDX-License-Identifier: BSD-3-Clause
+*/
+
+#ifndef CALANTHA_BUMPALLOCATOR_HPP
+#define CALANTHA_BUMPALLOCATOR_HPP
+BEGIN_NAMESPACE(mem);
+
+END_NAMESPACE(mem);
+#endif //CALANTHA_BUMPALLOCATOR_HPP

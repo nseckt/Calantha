@@ -1,0 +1,8 @@
+This isn't a super comprehensive or detailed list of
+things that need to be done, but it should serve as a good general overview
+of what needs to be done next!
+
+1. Bump allocator (for "eternal" storage)
+2. Slightly better allocator
+3. Font file parsing, rendering to framebuffer
+4. Interrupts

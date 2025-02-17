@@ -8,10 +8,17 @@
 #include <Kernel/Misc/MacroUtils.hpp>
 BEGIN_NAMESPACE(kcore);
 
-#define FATAL(MSG) ::kcore::__fatal_assertion("FATAL :: " MSG);
-#define PANIC(MSG) ::kcore::__fatal_assertion("PANIC :: " MSG " -- " SOURCE_LOC)
-#define UNREACHABLE_ASSERTION() PANIC("Default assertion - unreachable branch.")
-#define ASSERT(COND, ...) if( !(COND)) { PANIC("Assertion \"" #COND "\" failed! " __VA_ARGS__); }
+#if ASSERTIONS_ENABLED_
+#   define FATAL(MSG) ::kcore::__fatal_assertion("FATAL :: " MSG);
+#   define PANIC(MSG) ::kcore::__fatal_assertion("PANIC :: " MSG " -- " SOURCE_LOC)
+#   define UNREACHABLE_ASSERTION() PANIC("Default assertion - unreachable branch.")
+#   define ASSERT(COND, ...) if( !(COND)) { PANIC("Assertion \"" #COND "\" failed! " __VA_ARGS__); }
+#else
+#   define FATAL(MSG)
+#   define PANIC(MSG)
+#   define UNREACHABLE_ASSERTION()
+#   define ASSERT(COND, ...)
+#endif //ASSERTIONS_ENABLED_
 
 [[noreturn]] auto __fatal_assertion(const char* msg) -> void;
 [[noreturn]] auto __spin_forever() -> void;

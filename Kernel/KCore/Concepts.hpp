@@ -9,10 +9,10 @@
 BEGIN_NAMESPACE(kcore);
 
 template<typename T, typename ...Us>
-concept AreAll = (IsSame<T, Us> && ...);
+concept AreAll = (IsSame<T, Decay<Us>> && ...);
 
 template<typename T, typename ...Us>
-concept AnyOf = (IsSame<T, Us> || ...);
+concept AnyOf = (IsSame<T, Decay<Us>> || ...);
 
 template<typename T, typename U>
 concept Is = IsSame<T, U>;
@@ -25,6 +25,9 @@ concept Integer = IsIntegral<T>;
 
 template<typename T>
 concept Pointer = IsPointer<T>;
+
+template<typename T>
+concept DefaultConstructible = IsDefaultConstructible<T>;
 
 template<typename T>
 concept Character = AnyOf<Unsigned<T>, unsigned char, char8_t, char16_t, char32_t>;

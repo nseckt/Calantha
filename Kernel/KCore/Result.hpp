@@ -19,6 +19,7 @@ CTA_MAKE_COMPARABLE_MEMBER(ErrC, value_);
     InvalidArg,   /// A provided argument is incorrect or malformed.
     NoMemory,     /// There's no memory left! For something....
     NImplemented, /// This function/method/feature is not yet implemented.
+    Overflow,     /// This would cause an overflow somewhere.
     Generic,      /// For when you can't think of anything.
   };
 
@@ -31,9 +32,10 @@ struct Error {
   using MessageType_ = const char*;
   using CodeType_    = ErrC;
 
-  MessageType_ msg_ = nullptr;
+  MessageType_ msg_ = "---";
   CodeType_ code_{};
 
+  constexpr Error(CodeType_ code) : code_(code) {}
   constexpr Error(MessageType_ msg, CodeType_ code) : msg_(msg), code_(code) {}
   constexpr Error()  = default;
   constexpr ~Error() = default;
@@ -47,20 +49,20 @@ public:
 
   template<typename ...Args>
   [[nodiscard]] static auto create(Args&&... args) -> Result_ {
-    return Result_{ kcore::forward<Args>(args)... };
+    return T{kcore::forward<Args>(args)...};
   }
 
-  ALWAYS_INLINE auto value_or(T&& other) const -> ValueType {
+  [[nodiscard]] ALWAYS_INLINE auto value_or(T&& other) const -> ValueType {
     if(value_) return value_.value();
     return other;
   }
 
-  [[nodiscard]] ALWAYS_INLINE auto value() -> T& {
-    return value_.value();
+  [[nodiscard]] ALWAYS_INLINE auto&& value(this auto&& self) {
+    return kcore::forward<decltype(self)>(self).value_.value();
   }
 
-  [[nodiscard]] ALWAYS_INLINE auto error() -> E& {
-    return error_.value();
+  [[nodiscard]] ALWAYS_INLINE auto&& error(this auto&& self) {
+    return kcore::forward<decltype(self)>(self).error_.value();
   }
 
   auto operator->(this auto&& self) -> decltype(&self.value_.value()) {
@@ -91,6 +93,11 @@ private:
   Option<E> error_;
 };
 
+struct VoidResult_ {
+  unsigned char dummy_value_ = 0;
+  constexpr VoidResult_() = default;
+};
+
 template<typename T>
 struct ResultDispatch_ {
   using Type = Result_<T>;
@@ -98,7 +105,7 @@ struct ResultDispatch_ {
 
 template<>
 struct ResultDispatch_<void> {
-  using Type = Result_<None_>;
+  using Type = Result_<VoidResult_>;
 };
 
 template<typename T>

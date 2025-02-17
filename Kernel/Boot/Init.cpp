@@ -9,7 +9,7 @@
 #include <Kernel/Vendor/limine.h>
 #include <Kernel/KCore/Result.hpp>
 #include <Kernel/Serial/Print.hpp>
-#include <Kernel/Memory/MMU.hpp>
+#include <Kernel/KCore/CharConv.hpp>
 
 namespace {
   __attribute__((used, section(".limine_requests")))
@@ -45,39 +45,31 @@ extern "C" {
 extern void (*__init_array[])();
 extern void (*__init_array_end[])();
 
-auto get_value(Option<int> i) -> Result<int> { //test lol
-  if(i.has_value() && *i > 100) return Result<int>::create(400);
-  return Error{"blabla", ErrC::Generic};
-}
-
 extern "C" void calantha_init() {
   for (usize i = 0; &__init_array[i] != __init_array_end; i++) {
     __init_array[i]();
   }
 
   SERIAL_INIT();
-  auto entry1 = mem::get_page_index(mem::PageLevel::PML4, 0xFFFFFFFFFFFFFFFF);
-  if(entry1 == 511) {
-    SERIAL_PUTS("it's the last one!!");
+  uint64 num = 0;
+  ASSERT(from_chars("FFE1B"_sv, num, 16).has_value());
+
+  if(num == 0xFFE1B) {
+    SERIAL_PUTS("It worked!\n");
   } else {
-    SERIAL_PUTS("No lol!");
+    SERIAL_PUTS("It did not work!\n");
   }
 
-  SERIAL_PUTCH('\n');
   ASSERT(LIMINE_BASE_REVISION_SUPPORTED == true);
   ASSERT(kernel_address_request.response != nullptr);
   ASSERT(framebuffer_request.response != nullptr);
   ASSERT(framebuffer_request.response->framebuffer_count >= 1);
 
-  auto val = get_value(300);
-  if(val.has_value() && *val == 400) {
-    // Fetch the first framebuffer.
-    // Note: we assume the framebuffer model is RGB with 32-bit pixels.
-    limine_framebuffer *framebuffer = framebuffer_request.response->framebuffers[0];
-    for (usize i = 0; i < 100; i++) {
-      volatile uint32 *fb_ptr = static_cast<volatile uint32 *>(framebuffer->address);
-      fb_ptr[i * (framebuffer->pitch / 4) + i] = 0xffffff;
-    }
+  // Fetch the first framebuffer.
+  // Note: we assume the framebuffer model is RGB with 32-bit pixels.
+  limine_framebuffer *framebuffer = framebuffer_request.response->framebuffers[0];
+  for (usize i = 0; i < 100; i++) {
+    volatile uint32 *fb_ptr = static_cast<volatile uint32 *>(framebuffer->address);
+    fb_ptr[i * (framebuffer->pitch / 4) + i] = 0xffffff;
   }
-
 }

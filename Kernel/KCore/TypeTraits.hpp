@@ -247,6 +247,9 @@ template<typename T, typename ...Args>
 inline constexpr bool IsConstructible = __is_constructible(T, Args...);
 
 template<typename T>
+inline constexpr bool IsDefaultConstructible = __is_constructible(T);
+
+template<typename T>
 inline constexpr bool IsTriviallyDestructible = __has_trivial_destructor(T) && IsDestructible<T>;
 
 template<typename T, typename ...Args>

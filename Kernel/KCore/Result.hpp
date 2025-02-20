@@ -52,17 +52,25 @@ public:
     return T{kcore::forward<Args>(args)...};
   }
 
-  [[nodiscard]] ALWAYS_INLINE auto value_or(T&& other) const -> ValueType {
+  ALWAYS_INLINE auto value_or(T&& other) const -> ValueType {
     if(value_) return value_.value();
     return other;
   }
 
-  [[nodiscard]] ALWAYS_INLINE auto&& value(this auto&& self) {
+  ALWAYS_INLINE auto&& value(this auto&& self) {
     return kcore::forward<decltype(self)>(self).value_.value();
   }
 
-  [[nodiscard]] ALWAYS_INLINE auto&& error(this auto&& self) {
+  ALWAYS_INLINE auto&& error(this auto&& self) {
     return kcore::forward<decltype(self)>(self).error_.value();
+  }
+
+  ALWAYS_INLINE auto release_value(this auto&& self) -> ValueType {
+    return kcore::forward<decltype(self)>(self).value_.release_value();
+  }
+
+  ALWAYS_INLINE auto release_error(this auto&& self) -> ErrorType {
+    return kcore::forward<decltype(self)>(self).error_.release_value();
   }
 
   auto operator->(this auto&& self) -> decltype(&self.value_.value()) {

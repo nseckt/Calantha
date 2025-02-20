@@ -15,14 +15,14 @@ constexpr int BaseOct = 8;
 constexpr int BaseBin = 2;
 
 template<Integer Int>
-static auto __digit_value(const char ch) -> Option<Int> {
+static auto digit_value_(const char ch) -> Option<Int> {
   if (ch >= '0' && ch <= '9') return ch - '0';
   if (ch >= 'A' && ch <= 'F') return ch - 'A' + 10;
   if (ch >= 'a' && ch <= 'f') return ch - 'a' + 10;
   return None();
 }
 
-static auto __is_digit(char ch, int base) -> bool {
+static auto is_digit_(char ch, int base) -> bool {
   if(ch >= 'A' && ch <= 'Z') ch = tolower(ch);
   switch (base) {
   case BaseBin: return ch == '1' || ch == '0';
@@ -36,7 +36,7 @@ static auto __is_digit(char ch, int base) -> bool {
 }
 
 template<Integer Int, Int base_>
-static auto __from_chars(const StringView& sv, Int& out) -> Result<void> {
+static auto from_chars_(const StringView& sv, Int& out) -> Result<void> {
   out = 0; bool neg = false;
   if(sv.empty()) return Error{ErrC::InvalidArg};
   if(sv == "0")  return Result<void>::create();
@@ -50,8 +50,8 @@ static auto __from_chars(const StringView& sv, Int& out) -> Result<void> {
     ++index;         /// even for unsigned types.
   }
 
-  for(; index < sv.size() && __is_digit(sv.at(index), base_); ++index) {
-    const Int digit = MUST(__digit_value<Int>(sv.at(index)));
+  for(; index < sv.size() && is_digit_(sv.at(index), base_); ++index) {
+    const Int digit = MUST(digit_value_<Int>(sv.at(index)));
     const Int maxi  = NumericLimits<Int>::max();
     if(out > (maxi - digit) / base_) return Error{ErrC::Overflow};
     out = out * base_ + digit;
@@ -67,12 +67,48 @@ static auto __from_chars(const StringView& sv, Int& out) -> Result<void> {
   return Result<void>::create();
 }
 
+static auto append_next_char_(Span<char>& chars, usize& i, char ch) -> Result<void> {
+  if(i >= chars.size()) return Error{"buffer too small!", ErrC::Overflow};
+  chars.at(i++) = ch;
+  return Result<void>::create();
+}
+
+template<Integer Int>
+static auto to_chars_(const Int num, Span<char>& chars) -> Result<usize> {
+  if(usize temp_index = 0; num == 0) {
+    TRY(append_next_char_(chars, temp_index, '0'));
+    return Result<usize>::create(0ULL);
+  }
+
+  usize index = 0, curr = num;
+  if (NumericLimits<Int>::is_signed && num < 0) {
+    curr = -curr; /// Perform negation if we're working with a negative integer.
+  }               /// Should simpify conversion.
+
+  while(curr > 0) {
+    TRY(append_next_char_(chars, index, static_cast<char>(curr % 10 + '0')));
+    curr /= 10;
+  }
+
+  if(NumericLimits<Int>::is_signed && num < 0) {
+    TRY(append_next_char_(chars, index, '-'));
+  }
+
+  for(usize start = 0, end = index - 1; start < end; ++start, --end) {
+    const char temp = chars.at(start); /// Reverse the characters.
+    chars.at(start) = chars.at(end);   ///
+    chars.at(end)   = temp;
+  }
+
+  return Result<usize>::create(index);
+}
+
 auto from_chars(const StringView &sv, int64 &out, int base) -> Result<void> {
   switch (base) {
-  case BaseBin: return __from_chars<int64, 2> (sv, out);
-  case BaseHex: return __from_chars<int64, 16>(sv, out);
-  case BaseDec: return __from_chars<int64, 10>(sv, out);
-  case BaseOct: return __from_chars<int64, 8> (sv, out);
+  case BaseBin: return from_chars_<int64, 2> (sv, out);
+  case BaseHex: return from_chars_<int64, 16>(sv, out);
+  case BaseDec: return from_chars_<int64, 10>(sv, out);
+  case BaseOct: return from_chars_<int64, 8> (sv, out);
   default: break;
   }
 
@@ -81,14 +117,22 @@ auto from_chars(const StringView &sv, int64 &out, int base) -> Result<void> {
 
 auto from_chars(const StringView &sv, uint64 &out, int base) -> Result<void> {
   switch (base) {
-    case BaseBin: return __from_chars<uint64, 2> (sv, out);
-    case BaseHex: return __from_chars<uint64, 16>(sv, out);
-    case BaseDec: return __from_chars<uint64, 10>(sv, out);
-    case BaseOct: return __from_chars<uint64, 8> (sv, out);
+    case BaseBin: return from_chars_<uint64, 2> (sv, out);
+    case BaseHex: return from_chars_<uint64, 16>(sv, out);
+    case BaseDec: return from_chars_<uint64, 10>(sv, out);
+    case BaseOct: return from_chars_<uint64, 8> (sv, out);
     default: break;
   }
 
   return Error{"Invalid numerical base!", ErrC::InvalidArg};
+}
+
+auto to_chars(int64 in, Span<char> &out /*, base=10 */) -> Result<usize> {
+  return to_chars_<int64>(in, out);
+}
+
+auto to_chars(uint64 in, Span<char> &out /*, base=10 */) -> Result<usize> {
+  return to_chars_<uint64>(in, out);
 }
 
 END_NAMESPACE(kcore);

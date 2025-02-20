@@ -1,1 +1,6 @@
 * text=auto eol=lf
+
+# Binary files
+*.psf2 binary
+*.psf binary
+*.bmp binary

@@ -51,14 +51,15 @@ extern "C" void calantha_init() {
   }
 
   SERIAL_INIT();
-  uint64 num = 0;
-  ASSERT(from_chars("FFE1B"_sv, num, 16).has_value());
+  int64 in = 42069;
+  char buff[256]{0};
 
-  if(num == 0xFFE1B) {
-    SERIAL_PUTS("It worked!\n");
-  } else {
-    SERIAL_PUTS("It did not work!\n");
-  }
+  Span<char> sp{buff};
+  ASSERT(to_chars(in, sp));
+
+  SERIAL_PUTS("Result:\n");
+  SERIAL_PUTS(buff);
+
 
   ASSERT(LIMINE_BASE_REVISION_SUPPORTED == true);
   ASSERT(kernel_address_request.response != nullptr);

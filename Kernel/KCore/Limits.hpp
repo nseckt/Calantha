@@ -23,7 +23,7 @@ struct NumericLimits<int64> {
 template<>
 struct NumericLimits<uint64> {
   constexpr static uint64 max() { return __UINT64_MAX__; }
-  constexpr static uint64 min() { return 0; }
+  constexpr static uint64 min() { return 0ULL; }
   constexpr static bool is_signed = false;
 };
 

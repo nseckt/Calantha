@@ -51,7 +51,7 @@ extern "C" void calantha_init() {
   }
 
   SERIAL_INIT();
-  int64 in = 42069;
+  int64 in = -42069;
   char buff[256]{0};
 
   Span<char> sp{buff};

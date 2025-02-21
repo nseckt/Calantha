@@ -48,28 +48,28 @@ public:
   using ErrorType = E;
 
   template<typename ...Args>
-  [[nodiscard]] static auto create(Args&&... args) -> Result_ {
+  NODISCARD_ static auto create(Args&&... args) -> Result_ {
     return T{kcore::forward<Args>(args)...};
   }
 
-  ALWAYS_INLINE auto value_or(T&& other) const -> ValueType {
+  FORCEINLINE_ auto value_or(T&& other) const -> ValueType {
     if(value_) return value_.value();
     return other;
   }
 
-  ALWAYS_INLINE auto&& value(this auto&& self) {
+  FORCEINLINE_ auto&& value(this auto&& self) {
     return kcore::forward<decltype(self)>(self).value_.value();
   }
 
-  ALWAYS_INLINE auto&& error(this auto&& self) {
+  FORCEINLINE_ auto&& error(this auto&& self) {
     return kcore::forward<decltype(self)>(self).error_.value();
   }
 
-  ALWAYS_INLINE auto release_value(this auto&& self) -> ValueType {
+  FORCEINLINE_ auto release_value(this auto&& self) -> ValueType {
     return kcore::forward<decltype(self)>(self).value_.release_value();
   }
 
-  ALWAYS_INLINE auto release_error(this auto&& self) -> ErrorType {
+  FORCEINLINE_ auto release_error(this auto&& self) -> ErrorType {
     return kcore::forward<decltype(self)>(self).error_.release_value();
   }
 

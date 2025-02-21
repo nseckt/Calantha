@@ -16,23 +16,23 @@ public:
   using IteratorType = ContiguousIterator<AddConst<Char>>;
   using CharType     = AddConst<Char>;
 
-  ALWAYS_INLINE constexpr auto data() const -> CharType* {
+  FORCEINLINE_ constexpr auto data() const -> CharType* {
     return elems_;
   }
 
-  ALWAYS_INLINE constexpr auto size() const -> usize {
+  FORCEINLINE_ constexpr auto size() const -> usize {
     return size_;   /// Stinky dinky private data member
   }                 ///
 
-  ALWAYS_INLINE constexpr auto empty() const -> bool {
+  FORCEINLINE_ constexpr auto empty() const -> bool {
     return size_ == 0;
   }
 
-  ALWAYS_INLINE constexpr auto begin() -> IteratorType {
+  FORCEINLINE_ constexpr auto begin() -> IteratorType {
     return elems_;  /// Provide iterator types...
   }                 ///
 
-  ALWAYS_INLINE constexpr auto end() -> IteratorType {
+  FORCEINLINE_ constexpr auto end() -> IteratorType {
     return elems_ + size_;
   }
 
@@ -52,15 +52,15 @@ public:
     return elems_[ i ];
   }
 
-  ALWAYS_INLINE auto at(usize i) const -> const Char& {
+  FORCEINLINE_ auto at(usize i) const -> const Char& {
     ASSERT(i < size_, "Bounds check failure!");
     return elems_[ i ];
   }
 
-  ALWAYS_INLINE constexpr StringView_(CharType* ptr)
+  FORCEINLINE_ constexpr StringView_(CharType* ptr)
   : elems_(ptr), size_(kstrlen(ptr)) {}
 
-  ALWAYS_INLINE constexpr StringView_(CharType* ptr, usize len)
+  FORCEINLINE_ constexpr StringView_(CharType* ptr, usize len)
   : elems_(ptr), size_(len) {}
 
   constexpr StringView_(StringView_&&)      = default;

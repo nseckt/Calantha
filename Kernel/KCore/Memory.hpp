@@ -24,13 +24,14 @@ inline void* operator new[](size_t size, void* ptr) noexcept {
 #pragma GCC diagnostic pop
 
 BEGIN_NAMESPACE(kcore);
+
 template<typename T>
-[[nodiscard]] constexpr auto launder(T* ptr) -> T* {
+NODISCARD_ constexpr auto launder(T* ptr) -> T* {
   return __builtin_launder(ptr);
 }
 
 template<typename T, typename E>
-[[nodiscard]] inline auto ptr_cast(E* ptr) -> T* {
+NODISCARD_ inline auto ptr_cast(E* ptr) -> T* {
   return __builtin_launder(reinterpret_cast<T*>(ptr));
 }
 

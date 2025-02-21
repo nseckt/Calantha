@@ -8,7 +8,7 @@
 #include <Kernel/KCore/Types.hpp>
 BEGIN_NAMESPACE(interrupts::idt);
 
-struct PACKED Entry {
+struct PACKED_ Entry {
   uint16 isr_low;    /// The lower 16 bits of the ISR's address.
   uint16 kernel_cs;  /// The GDT segment selector that the CPU will load into CS before calling the ISR.
   uint8  ist;        /// The IST in the TSS that the CPU will load into RSP.
@@ -18,7 +18,7 @@ struct PACKED Entry {
   uint32 reserved;   /// Should be set to zero.
 };
 
-struct PACKED Register {
+struct PACKED_ Register {
   uint16 limit;      /// Limit.
   uint64 base;       /// Base address of the IDT.
 };

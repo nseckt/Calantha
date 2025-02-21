@@ -12,7 +12,7 @@ constexpr uint8 Magic = 0x864ab572;
 constexpr uint32 HasUnicodeTable = 0x00000001;
 constexpr uint32 MaxVersion = 0;
 
-struct PACKED Header {
+struct PACKED_ Header {
   uint8 magic_[4]; /// must be 72 b5 4a 86
   uint32 version_; /// should always be 0.
   uint32 size_;    /// Size of this header, offset to bitmaps

@@ -18,50 +18,50 @@ public:
   using IteratorType = ContiguousIterator<T>;
   using ValueType    = T;
 
-  ALWAYS_INLINE constexpr auto* data(this auto&& self) {
+  FORCEINLINE_ constexpr auto* data(this auto&& self) {
     return kcore::forward<decltype(self)>(self).elems_;
   }
 
-  ALWAYS_INLINE constexpr auto begin() -> IteratorType {
+  FORCEINLINE_ constexpr auto begin() -> IteratorType {
     return elems_;  /// Provide iterator types...
   }                 ///
 
-  ALWAYS_INLINE constexpr auto end() -> IteratorType {
+  FORCEINLINE_ constexpr auto end() -> IteratorType {
     return elems_ + size_;
   }
 
-  ALWAYS_INLINE constexpr auto size() const -> usize {
+  FORCEINLINE_ constexpr auto size() const -> usize {
     return size_;   /// Maybe just make size_ public? :/
   }                 ///
 
-  ALWAYS_INLINE constexpr auto empty() const -> bool {
+  FORCEINLINE_ constexpr auto empty() const -> bool {
     return size_ == 0;
   }
 
-  ALWAYS_INLINE auto&& front(this auto&& self) {
+  FORCEINLINE_ auto&& front(this auto&& self) {
     ASSERT(!empty(), "Bounds check failure!")
     return kcore::forward<decltype(self)>(self).elems_[ 0 ];
   }
 
-  ALWAYS_INLINE auto&& back(this auto&& self) {
+  FORCEINLINE_ auto&& back(this auto&& self) {
     ASSERT(!empty(), "Bounds check failure!")
     return kcore::forward<decltype(self)>(self).elems_[ self.size_ - 1 ];
   }
 
-  ALWAYS_INLINE auto&& at(this auto&& self, usize i) {
+  FORCEINLINE_ auto&& at(this auto&& self, usize i) {
     ASSERT(i < self.size_, "Bounds check failure!");
     return kcore::forward<decltype(self)>(self).elems_[ i ];
   }
 
-  ALWAYS_INLINE constexpr auto&& operator[](this auto&& self, usize i) {
+  FORCEINLINE_ constexpr auto&& operator[](this auto&& self, usize i) {
     return kcore::forward<decltype(self)>(self).elems_[ i ];
   }
 
-  ALWAYS_INLINE constexpr Span(T* ptr, usize size)
+  FORCEINLINE_ constexpr Span(T* ptr, usize size)
   : elems_(ptr), size_(size) {}
 
   template<usize size>
-  ALWAYS_INLINE constexpr Span(T (&elems)[size])
+  FORCEINLINE_ constexpr Span(T (&elems)[size])
   : elems_(elems), size_(size) {}
 
   constexpr Span(Span&& other)      = default;

@@ -18,11 +18,11 @@ auto to_chars(int64 in, Span<char>& out)  -> Result<usize>;
 auto to_chars(uint64 in, Span<char>& out) -> Result<usize>;
 
 constexpr auto tolower(const char ch) -> char {  /// ASCII uppercase + 0x20:
-  return ch + 0x20;                              /// produces lowercase.
+  return ch + static_cast<char>(0x20);           /// produces lowercase.
 }
 
 constexpr auto toupper(const char ch) -> char {  /// ASCII lowercase - 0x20:
-  return ch - 0x20;                              /// produces uppercase.
+  return ch - static_cast<char>(0x20);           /// produces uppercase.
 }
 
 constexpr auto isspace(const char ch) -> bool {  /// Checks if a character is

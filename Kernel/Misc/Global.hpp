@@ -13,9 +13,10 @@
 #define BEGIN_NAMESPACE(NAME) namespace NAME {
 #define END_NAMESPACE(NAME) }
 
-// GCC attribute macros
-#define PACKED         __attribute__((packed))
-#define ALWAYS_INLINE  __attribute__((always_inline))
-#define NEVER_INLINE   __attribute__((noinline))
+// Attribute macros
+#define NODISCARD_    [[nodiscard]]
+#define PACKED_       __attribute__((packed))
+#define FORCEINLINE_  __attribute__((always_inline))
+#define NOINLINE_     __attribute__((noinline))
 
 #endif //CALANTHA_GLOBAL_HPP

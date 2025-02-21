@@ -28,17 +28,17 @@ public:
   using ReferenceType = T&;
   using PointerType   = T*;
 
-  [[nodiscard]] ALWAYS_INLINE auto value() & -> ReferenceType {
+  NODISCARD_ FORCEINLINE_ auto value() & -> ReferenceType {
     ASSERT(has_value_, "Option has no contained type!");
     return *kcore::launder<T>(reinterpret_cast<T*>(&value_));
   }
 
-  [[nodiscard]] ALWAYS_INLINE auto value() const& -> const T& {
+  NODISCARD_ FORCEINLINE_ auto value() const& -> const T& {
     ASSERT(has_value_, "Option has no contained type!");
     return *kcore::launder<const T>(reinterpret_cast<const T*>(&value_));
   }
 
-  [[nodiscard]] ALWAYS_INLINE auto value() && -> ValueType {
+  NODISCARD_ FORCEINLINE_ auto value() && -> ValueType {
     ASSERT(has_value_, "Option has no contained type!");
     return release_value(); /// rvalues should release the contained type.
   }                         ///
@@ -53,7 +53,7 @@ public:
     return self.value();
   }
 
-  ALWAYS_INLINE auto release_value() -> ValueType {
+  FORCEINLINE_ auto release_value() -> ValueType {
     ASSERT(has_value_, "Option has no contained type!");
     T released = kcore::move( value() );
     value().~T();           /// We'll have to manually call the destructor.
@@ -61,18 +61,18 @@ public:
     return released;
   }
 
-  ALWAYS_INLINE auto clear() -> void {
+  FORCEINLINE_ auto clear() -> void {
     if(has_value_)
       value().~T();
     has_value_ = false;
   }
 
-  ALWAYS_INLINE auto value_or(T&& other) const -> ValueType {
+  FORCEINLINE_ auto value_or(T&& other) const -> ValueType {
     if(has_value_) return value();
     return other;
   }
 
-  ALWAYS_INLINE auto operator=(Option&& other) noexcept -> Option& {
+  FORCEINLINE_ auto operator=(Option&& other) noexcept -> Option& {
     if(&other == this) return *this;
     clear();
     if(other.has_value_) {
@@ -83,7 +83,7 @@ public:
     return *this;
   }
 
-  ALWAYS_INLINE auto operator=(const Option& other) -> Option& {
+  FORCEINLINE_ auto operator=(const Option& other) -> Option& {
     if(&other == this) return *this;
     clear();
     if(other.has_value_) {
@@ -95,30 +95,30 @@ public:
   }
 
   template<typename ...Args>
-  ALWAYS_INLINE auto emplace(Args&&... args) -> void {
+  FORCEINLINE_ auto emplace(Args&&... args) -> void {
     clear();
     has_value_ = true;
     kcore::construct_at<T>(&value_, kcore::forward<Args>(args)...);
   }
 
   template<typename ...Args>
-  ALWAYS_INLINE static auto create(Args&&... args) -> Option {
+  FORCEINLINE_ static auto create(Args&&... args) -> Option {
     return Option{ kcore::forward<Args>(args)... };
   }
 
   template<typename ...Args> requires ConstructibleFrom<T, Args...>
-  ALWAYS_INLINE Option(Args&&... args) {
+  FORCEINLINE_ Option(Args&&... args) {
     kcore::construct_at<T>(&value_, kcore::forward<Args>(args)...);
     has_value_ = true;
   }
 
-  ALWAYS_INLINE Option(const Option& other) {
+  FORCEINLINE_ Option(const Option& other) {
     if(!other.has_value_) return;
     kcore::construct_at<T>( &value_, other.value() );
     has_value_ = true;
   }
 
-  ALWAYS_INLINE Option(Option&& other) {
+  FORCEINLINE_ Option(Option&& other) {
     if(!other.has_value_) return;
     kcore::construct_at<T>( &value_, other.release_value() );
     has_value_ = true;

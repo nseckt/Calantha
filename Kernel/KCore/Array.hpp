@@ -19,63 +19,63 @@ public:
   using ValueType    = T;
   using IteratorType = ContiguousIterator<T>;
 
-  ALWAYS_INLINE constexpr auto* data(this auto&& self) {
+  FORCEINLINE_ constexpr auto* data(this auto&& self) {
     return kcore::forward<decltype(self)>(self).elems_;
   }
 
-  ALWAYS_INLINE constexpr auto size() const -> usize {
+  FORCEINLINE_ constexpr auto size() const -> usize {
     return sz_;     /// Chat is this pointless
   }                 ///
 
-  ALWAYS_INLINE constexpr auto empty() const -> bool {
+  FORCEINLINE_ constexpr auto empty() const -> bool {
     return sz_ == 0;
   }
 
-  ALWAYS_INLINE constexpr auto begin() -> IteratorType {
+  FORCEINLINE_ constexpr auto begin() -> IteratorType {
     return buff_;   /// Provide contiguous iterator types
   }                 ///
 
-  ALWAYS_INLINE constexpr auto end() -> IteratorType {
+  FORCEINLINE_ constexpr auto end() -> IteratorType {
     return buff_ + sz_;
   }
 
-  ALWAYS_INLINE constexpr auto span() -> Span<T> {
+  FORCEINLINE_ constexpr auto span() -> Span<T> {
     return Span<T>{buff_};
   }
 
-  ALWAYS_INLINE constexpr auto fill(const ValueType& v) -> void {
+  FORCEINLINE_ constexpr auto fill(const ValueType& v) -> void {
     for(usize i = 0; i < sz_; i++) buff_[i] = v;
   }
 
-  ALWAYS_INLINE auto&& front(this auto&& self) {
+  FORCEINLINE_ auto&& front(this auto&& self) {
     ASSERT(!empty(), "Bounds check failure!")
     return kcore::forward<decltype(self)>(self).buff_[ 0 ];
   }
 
-  ALWAYS_INLINE auto&& back(this auto&& self) {
+  FORCEINLINE_ auto&& back(this auto&& self) {
     ASSERT(!empty(), "Bounds check failure!")
     return kcore::forward<decltype(self)>(self).buff_[ sz_ - 1 ];
   }
 
-  ALWAYS_INLINE auto&& at(this auto&& self, usize i) {
+  FORCEINLINE_ auto&& at(this auto&& self, usize i) {
     ASSERT(i < self.size_, "Bounds check failure!");
     return kcore::forward<decltype(self)>(self).buff_[ i ];
   }
 
-  ALWAYS_INLINE constexpr auto&& operator[](this auto&& self, usize i) {
+  FORCEINLINE_ constexpr auto&& operator[](this auto&& self, usize i) {
     return kcore::forward<decltype(self)>(self).buff_[ i ];
   }
 
-  ALWAYS_INLINE constexpr Array(T (&arr)[sz_]) {
+  FORCEINLINE_ constexpr Array(T (&arr)[sz_]) {
     for(usize i = 0; i < sz_; i++) buff_[ i ] = arr[ i ];
   }
 
-  ALWAYS_INLINE constexpr Array(T (&&arr)[sz_]) {
+  FORCEINLINE_ constexpr Array(T (&&arr)[sz_]) {
     for(usize i = 0; i < sz_; i++) buff_[ i ] = kcore::move(arr[ i ]);
   }
 
   template<AreAll<T> ...Args> requires(sizeof...(Args) == sz_)
-  ALWAYS_INLINE constexpr Array(Args&&... args) : buff_(kcore::forward<Args>(args)...)  {}
+  FORCEINLINE_ constexpr Array(Args&&... args) : buff_(kcore::forward<Args>(args)...)  {}
 
   constexpr Array() = default;
   constexpr Array(const Array&) = default;

@@ -26,10 +26,11 @@ init_pt:
 
 .section .stack, "aw", @nobits
 stack_bottom:
-.skip 16384
+.skip 32768
 stack_top:
 
 /* Global Descriptor Table (GDT) */
+/* Null descriptor, 64 bit code segment. */
 .section .data
 gdt_start:
 .quad 0
@@ -41,14 +42,18 @@ gdt_ptr:
 .quad gdt_start
 
 .set CODE64_SELECTOR_OFFSET, gdt64_code - gdt_start
-
+.global code64_selector
+code64_selector:
+.short CODE64_SELECTOR_OFFSET
 
 .section .text
 .global _start
 .type _start @function
 _start:
-    movq $stack_top, %rsp
+    cli  ## Clear interrupt flag
+    cld  ## Clear direction flag
 
+    movq $stack_top, %rsp
     call clear_pagetables
 
     movq $gdt_ptr, %rax

@@ -31,7 +31,7 @@ NODISCARD_ constexpr auto launder(T* ptr) -> T* {
 }
 
 template<typename T, typename E>
-NODISCARD_ inline auto ptr_cast(E* ptr) -> T* {
+NODISCARD_ auto ptr_cast(E* ptr) -> T* {
   return __builtin_launder(reinterpret_cast<T*>(ptr));
 }
 
@@ -48,26 +48,8 @@ constexpr auto destroy_at(T* ptr) -> void {
 }
 
 template<typename T, usize sz> requires(sizeof(T) > 0)
-constexpr auto length_of([[maybe_unused]] T (&arr)[sz]) -> usize {
-  if constexpr (!sz)
-    return 0;        /// avoid division by zero in some edge cases
-  else               ///
-    return sizeof(arr) / sizeof(T);
-}
-
-inline auto align(usize align, usize size, void*& ptr, usize& space) -> void* {
-  if (space < size)  /// Ensure there's actually enough space.
-    return nullptr;  ///
-
-  const uintptr intptr  = reinterpret_cast<uintptr>(ptr);
-  const uintptr aligned = (intptr - 1u + align) & -align;
-  const uintptr diff    = aligned - intptr;
-
-  if (diff > (space - size))
-    return nullptr;  /// ensure we can update by the difference.
-                     ///
-  space -= diff;
-  return ptr = reinterpret_cast<void*>(aligned);
+constexpr auto length_of(UNUSED_ T (&arr)[sz]) -> usize {
+  return sizeof(arr) / sizeof(T);
 }
 
 template<Character Char>
@@ -87,11 +69,24 @@ constexpr auto kstrcmp(const Char* s1, const Char* s2) -> bool {
   return true;
 }
 
+/// Forward declarations
+NODISCARD_ auto align_down(usize align, void* ptr) -> void*;
+NODISCARD_ auto align_up(usize align, void* ptr)   -> void*;
+NODISCARD_ auto difference(void* start, void* end) -> usize;
+NODISCARD_ auto checked_align_up(usize align, usize size, void*& ptr, usize& space) -> void*;
+
 END_NAMESPACE(kcore);
 #endif //CALANTHA_KCORE_MEMORY_HPP
 #ifdef USING_KCORE_GLOBALLY
-using kcore::kstrlen;
 using kcore::launder;
+using kcore::ptr_cast;
 using kcore::construct_at;
 using kcore::destroy_at;
+using kcore::length_of;
+using kcore::align_up;
+using kcore::align_down;
+using kcore::checked_align_up;
+using kcore::difference;
+using kcore::kstrlen;
+using kcore::kstrcmp;
 #endif //USING_KCORE_GLOBALLY

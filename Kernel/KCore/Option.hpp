@@ -106,7 +106,7 @@ public:
     return Option{ kcore::forward<Args>(args)... };
   }
 
-  template<typename ...Args> requires ConstructibleFrom<T, Args...>
+  template<typename ...Args> requires Constructs<T, Args...>
   FORCEINLINE_ Option(Args&&... args) {
     kcore::construct_at<T>(&value_, kcore::forward<Args>(args)...);
     has_value_ = true;

@@ -12,11 +12,6 @@
 #warning "Try.hpp depends on kcore::Result<T>!"
 #endif
 
-///
-/// These macros make use of statement expressions, which are
-/// non-standard extensions provided by GCC and Clang.
-///
-
 #define TRY(EXPR)                                                                  \
   ({                                                                               \
     auto&& temp_result_ = (EXPR);                                                  \
@@ -32,5 +27,9 @@
     ASSERT(temp_result_.has_value(), "MUST() expression evaluated to an error!");  \
     temp_result_.release_value();                                                  \
   })                                                                               \
+
+#define ERROR_IF(EXPR, ...) do {                                                   \
+    if((EXPR)) { return ::kcore::Error{ __VA_ARGS__ }; }                           \
+  } while(0)                                                                       \
 
 #endif //CALANTHA_KCORE_TRY_HPP

@@ -27,13 +27,19 @@ template<typename T>
 concept Pointer = IsPointer<T>;
 
 template<typename T>
-concept DefaultConstructible = IsDefaultConstructible<T>;
-
-template<typename T>
 concept Character = AnyOf<Unsigned<T>, unsigned char, char8_t, char16_t, char32_t>;
 
+template<typename T>
+concept TrivialDTOR = IsTriviallyDestructible<T>;
+
+template<typename T>
+concept TrivialCTOR = IsTriviallyConstructible<T>;
+
+template<typename T>
+concept DefaultConstructible = IsDefaultConstructible<T>;
+
 template<typename T, typename ...Args>
-concept ConstructibleFrom = IsDestructible<T> && IsConstructible<T, Args...>;
+concept Constructs = IsDestructible<T> && IsConstructible<T, Args...>;
 
 END_NAMESPACE(kcore);
 #endif //CALANTHA_KCORE_CONCEPTS_HPP
@@ -42,4 +48,11 @@ using kcore::AreAll;
 using kcore::AnyOf;
 using kcore::Is;
 using kcore::Concrete;
+using kcore::Integer;
+using kcore::Pointer;
+using kcore::Character;
+using kcore::Constructs;
+using kcore::TrivialCTOR;
+using kcore::TrivialDTOR;
+using kcore::DefaultConstructible;
 #endif //USING_KCORE_GLOBALLY

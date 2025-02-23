@@ -10,6 +10,9 @@
 #include <Kernel/KCore/Result.hpp>
 #include <Kernel/Serial/Print.hpp>
 #include <Kernel/KCore/CharConv.hpp>
+#include <Kernel/Memory/Paging.hpp>
+#include <Kernel/KCore/Intrinsics.hpp>
+#include <Kernel/Memory/BumpAllocator.hpp>
 
 namespace {
   __attribute__((used, section(".limine_requests")))
@@ -45,26 +48,22 @@ extern "C" {
 extern void (*__init_array[])();
 extern void (*__init_array_end[])();
 
+static auto verify_limine_responses_() -> void {
+  ASSERT(LIMINE_BASE_REVISION_SUPPORTED == true);
+  ASSERT(kernel_address_request.response != nullptr);
+  ASSERT(framebuffer_request.response != nullptr);
+  ASSERT(framebuffer_request.response->framebuffer_count >= 1);
+}
+
+extern "C" uint16 code64_selector;
+
 extern "C" void calantha_init() {
   for (usize i = 0; &__init_array[i] != __init_array_end; i++) {
     __init_array[i]();
   }
 
   SERIAL_INIT();
-  int64 in = -42069;
-  char buff[256]{0};
-
-  Span<char> sp{buff};
-  ASSERT(to_chars(in, sp));
-
-  SERIAL_PUTS("Result:\n");
-  SERIAL_PUTS(buff);
-
-
-  ASSERT(LIMINE_BASE_REVISION_SUPPORTED == true);
-  ASSERT(kernel_address_request.response != nullptr);
-  ASSERT(framebuffer_request.response != nullptr);
-  ASSERT(framebuffer_request.response->framebuffer_count >= 1);
+  verify_limine_responses_();
 
   // Fetch the first framebuffer.
   // Note: we assume the framebuffer model is RGB with 32-bit pixels.
@@ -73,4 +72,13 @@ extern "C" void calantha_init() {
     volatile uint32 *fb_ptr = static_cast<volatile uint32 *>(framebuffer->address);
     fb_ptr[i * (framebuffer->pitch / 4) + i] = 0xffffff;
   }
+
+  char buff[512]{};
+  Span sp(buff);
+  if(to_chars(static_cast<uint64>(code64_selector), sp)) {
+    SERIAL_PUTS("C64 selector:\n");
+    SERIAL_PUTS(buff);
+    SERIAL_PUTCH('\n');
+  }
+
 }

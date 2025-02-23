@@ -19,9 +19,12 @@ struct PACKED_ Entry {
 };
 
 struct PACKED_ Register {
-  uint16 limit;      /// Limit.
+  uint16 limit;      /// Limit (size - 1).
   uint64 base;       /// Base address of the IDT.
 };
+
+extern constinit Entry g_table[ 256 ];
+extern constinit Register g_register;
 
 END_NAMESPACE(interrupts::idt);
 #endif //CALANTHA_IDT_HPP

@@ -11,11 +11,11 @@
 #include <Kernel/KCore/Span.hpp>
 BEGIN_NAMESPACE(kcore);
 
-auto from_chars(const StringView& sv, int64& out, int base = 10)  -> Result<void>;
+auto from_chars(const StringView& sv, int64& out,  int base = 10) -> Result<void>;
 auto from_chars(const StringView& sv, uint64& out, int base = 10) -> Result<void>;
 
-auto to_chars(int64 in, Span<char>& out)  -> Result<usize>;
-auto to_chars(uint64 in, Span<char>& out) -> Result<usize>;
+auto to_chars(int64 in, Span<char>& out,  int base = 10) -> Result<usize>;
+auto to_chars(uint64 in, Span<char>& out, int base = 10) -> Result<usize>;
 
 constexpr auto tolower(const char ch) -> char {  /// ASCII uppercase + 0x20:
   return ch + static_cast<char>(0x20);           /// produces lowercase.

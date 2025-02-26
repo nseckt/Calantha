@@ -4,9 +4,10 @@
 */
 
 #include <Kernel/Interrupts/IDT.hpp>
-BEGIN_NAMESPACE(interrupts::idt);
+BEGIN_NAMESPACE(interrupt::idt);
 
+__attribute__((aligned(0x10)))
 constinit Entry    g_table[ 256 ]{};
 constinit Register g_register{};
 
-END_NAMESPACE(interrupts::idt);
+END_NAMESPACE(interrupt::idt);

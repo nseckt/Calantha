@@ -24,10 +24,16 @@ template<typename T>
 concept Integer = IsIntegral<T>;
 
 template<typename T>
+concept Signed = IsIntegral<T> && IsSigned<T>;
+
+template<typename T>
+concept Unsigned = IsIntegral<T> && IsUnsigned<T>;
+
+template<typename T>
 concept Pointer = IsPointer<T>;
 
 template<typename T>
-concept Character = AnyOf<Unsigned<T>, unsigned char, char8_t, char16_t, char32_t>;
+concept Character = IsCharacter<T>;
 
 template<typename T>
 concept TrivialDTOR = IsTriviallyDestructible<T>;

@@ -5,14 +5,17 @@
 
 #ifndef CALANTHA_KCORE_INTRINSICS_HPP
 #define CALANTHA_KCORE_INTRINSICS_HPP
-#include <stddef.h> // stddef.h SHOULD be freestanding...
-#include <stdint.h> // This one too. If they aren't freestanding compatible we're fucked.
 
-// IMPORTANT:
-// GCC may generate calls to memset, memcpy, memmove,
-// and memcmp under certain scenarios, even when compiling
-// without linking against libc. Therefore it's crucial we
-// provide implementations for these ourselves.
+/// stddef.h and stdint.h are assumed to be
+/// freestanding compatible.
+#include <stddef.h>
+#include <stdint.h>
+
+/// IMPORTANT:
+/// GCC may generate calls to memset, memcpy, memmove,
+/// and memcmp under certain scenarios, even when compiling
+/// without linking against libc. Therefore it's crucial we
+/// provide implementations for these ourselves.
 
 extern "C" {
   void* memcpy(void *dest, const void *src, size_t n);

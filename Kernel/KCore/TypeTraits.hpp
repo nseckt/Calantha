@@ -184,7 +184,77 @@ struct Unsigned_<bool> {
 };
 
 template<typename T>
-using Unsigned = typename Unsigned_<T>::Type;
+using UnsignedT = typename Unsigned_<T>::Type;
+
+template<typename T>
+struct Signed_ {
+  using Type = void;
+};
+
+template<>
+struct Signed_<short> {
+  using Type = short;
+};
+
+template<>
+struct Signed_<int> {
+  using Type = int;
+};
+
+template<>
+struct Signed_<long> {
+  using Type = long;
+};
+
+template<>
+struct Signed_<long long> {
+  using Type = long long;
+};
+
+template<>
+struct Signed_<unsigned char> {
+  using Type = char;
+};
+
+template<>
+struct Signed_<unsigned short> {
+  using Type = short;
+};
+
+template<>
+struct Signed_<unsigned int> {
+  using Type = int;
+};
+
+template<>
+struct Signed_<unsigned long> {
+  using Type = long;
+};
+
+template<>
+struct Signed_<unsigned long long> {
+  using Type = long long;
+};
+
+template<>
+struct Signed_<char> {
+  using Type = char;
+};
+
+template<typename T>
+using SignedT = typename Signed_<T>::Type;
+
+template<typename T, typename U>
+inline constexpr bool IsSame = false;
+
+template<typename T>
+inline constexpr bool IsSame<T, T> = true;
+
+template<typename T>
+inline constexpr bool IsUnsigned = IsSame<T, UnsignedT<T>>;
+
+template<typename T>
+inline constexpr bool IsSigned = IsSame<T, SignedT<T>>;
 
 template<typename T>
 inline constexpr bool IsIntegral_ = false;
@@ -217,7 +287,28 @@ template<>
 inline constexpr bool IsIntegral_<char32_t> = true;
 
 template<typename T>
-inline constexpr bool IsIntegral = IsIntegral_<Unsigned<T>>;
+inline constexpr bool IsIntegral = IsIntegral_<UnsignedT<T>>;
+
+template<typename T>
+inline constexpr bool IsCharacter_ = false;
+
+template<>
+inline constexpr bool IsCharacter_<char8_t> = true;
+
+template<>
+inline constexpr bool IsCharacter_<char16_t> = true;
+
+template<>
+inline constexpr bool IsCharacter_<char32_t> = true;
+
+template<>
+inline constexpr bool IsCharacter_<char> = true;
+
+template<>
+inline constexpr bool IsCharacter_<wchar_t> = true;
+
+template<typename T>
+inline constexpr bool IsCharacter = IsCharacter_<Decay<T>>;
 
 template<typename T>
 inline constexpr bool IsLvalueReference = false;
@@ -233,12 +324,6 @@ inline constexpr bool IsRvalueReference<T&&> = true;
 
 template<typename T>
 inline constexpr bool IsReference = requires { IsLvalueReference<T> || IsRvalueReference<T>; };
-
-template<typename T, typename U>
-inline constexpr bool IsSame = false;
-
-template<typename T>
-inline constexpr bool IsSame<T, T> = true;
 
 template<typename T>
 inline constexpr bool IsDestructible = requires { declval<T>().~T(); };
@@ -273,6 +358,9 @@ inline constexpr bool IsPointer_<T*> = true;
 template<typename T>
 inline constexpr bool IsPointer = IsPointer_<RemoveCV<T>>;
 
+template<typename T>
+inline constexpr bool IsVoidPtr = IsPointer<T> && !IsCharacter<RemovePointer<T>>;
+
 END_NAMESPACE(kcore);
 #endif //CALANTHA_KCORE_TYPETRAITS_HPP
 #ifdef USING_KCORE_GLOBALLY
@@ -297,6 +385,9 @@ using kcore::IsTriviallyConstructible;
 using kcore::IsTriviallyDestructible;
 using kcore::RemoveCV;
 using kcore::IsPointer;
-using kcore::Unsigned;
+using kcore::UnsignedT;
 using kcore::IsIntegral;
+using kcore::IsUnsigned;
+using kcore::IsSigned;
+using kcore::SignedT;
 #endif //USING_KCORE_GLOBALLY

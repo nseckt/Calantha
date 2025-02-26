@@ -20,8 +20,8 @@ BEGIN_NAMESPACE(kcore);
 #   define ASSERT(COND, ...)
 #endif //ASSERTIONS_ENABLED_
 
-[[noreturn]] auto __fatal_assertion(const char* msg) -> void;
-[[noreturn]] auto __spin_forever() -> void;
+NORETURN_ auto __fatal_assertion(const char* msg) -> void;
+NORETURN_ auto __spin_forever() -> void;
 
 END_NAMESPACE(kcore);
 #endif //CALANTHA_KCORE_ASSERTIONS_HPP

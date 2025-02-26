@@ -6,11 +6,11 @@
 #ifndef CALANTHA_IDT_HPP
 #define CALANTHA_IDT_HPP
 #include <Kernel/KCore/Types.hpp>
-BEGIN_NAMESPACE(interrupts::idt);
+BEGIN_NAMESPACE(interrupt::idt);
 
 struct PACKED_ Entry {
   uint16 isr_low;    /// The lower 16 bits of the ISR's address.
-  uint16 kernel_cs;  /// The GDT segment selector that the CPU will load into CS before calling the ISR.
+  uint16 kernel_cs;  /// The GDT SL that the CPU will load into CS before calling the ISR.
   uint8  ist;        /// The IST in the TSS that the CPU will load into RSP.
   uint8  attributes; /// Type and attributes.
   uint16 isr_mid;    /// The higher 16 bits of the lower 32 bits of the ISR's address.
@@ -26,5 +26,8 @@ struct PACKED_ Register {
 extern constinit Entry g_table[ 256 ];
 extern constinit Register g_register;
 
-END_NAMESPACE(interrupts::idt);
+static_assert(sizeof(Entry)    == 16);
+static_assert(sizeof(Register) == 10);
+
+END_NAMESPACE(interrupt::idt);
 #endif //CALANTHA_IDT_HPP

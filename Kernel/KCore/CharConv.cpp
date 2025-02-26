@@ -73,7 +73,7 @@ static auto append_next_char_(Span<char>& chars, usize& i, char ch) -> Result<vo
   return Result<void>::create();
 }
 
-template<Integer Int>
+template<Integer Int, Int base_>
 static auto to_chars_(const Int num, Span<char>& chars) -> Result<usize> {
   if(usize temp_index = 0; num == 0) {
     TRY(append_next_char_(chars, temp_index, '0'));
@@ -82,16 +82,33 @@ static auto to_chars_(const Int num, Span<char>& chars) -> Result<usize> {
 
   usize index = 0, curr = num;
   if (NumericLimits<Int>::is_signed && num < 0) {
-    curr = -curr; /// Perform negation if we're working with a negative integer.
-  }               /// Should simpify conversion.
+    curr = -curr;
+  }
 
   while(curr > 0) {
-    TRY(append_next_char_(chars, index, static_cast<char>(curr % 10 + '0')));
-    curr /= 10;
+    usize rem  = curr % base_;
+    char digit = rem < 10 ? rem + '0' : (rem - 10) + 'A';
+    TRY(append_next_char_(chars, index, digit));
+    curr /= base_;
   }
 
   if(NumericLimits<Int>::is_signed && num < 0) {
     TRY(append_next_char_(chars, index, '-'));
+  }
+
+  switch(base_) {
+  case 16:
+    TRY(append_next_char_(chars, index, 'x'));
+    TRY(append_next_char_(chars, index, '0'));
+    break;
+  case 8:
+    TRY(append_next_char_(chars, index, '0'));
+    break;
+  case 2:
+    TRY(append_next_char_(chars, index, 'b'));
+    TRY(append_next_char_(chars, index, '0'));
+    FALLTHROUGH_;
+  default: break;
   }
 
   for(usize start = 0, end = index - 1; start < end; ++start, --end) {
@@ -117,22 +134,38 @@ auto from_chars(const StringView &sv, int64 &out, int base) -> Result<void> {
 
 auto from_chars(const StringView &sv, uint64 &out, int base) -> Result<void> {
   switch (base) {
-    case BaseBin: return from_chars_<uint64, 2> (sv, out);
-    case BaseHex: return from_chars_<uint64, 16>(sv, out);
-    case BaseDec: return from_chars_<uint64, 10>(sv, out);
-    case BaseOct: return from_chars_<uint64, 8> (sv, out);
-    default: break;
+  case BaseBin: return from_chars_<uint64, 2> (sv, out);
+  case BaseHex: return from_chars_<uint64, 16>(sv, out);
+  case BaseDec: return from_chars_<uint64, 10>(sv, out);
+  case BaseOct: return from_chars_<uint64, 8> (sv, out);
+  default: break;
   }
 
   return Error{"Invalid numerical base!", ErrC::InvalidArg};
 }
 
-auto to_chars(int64 in, Span<char> &out /*, base=10 */) -> Result<usize> {
-  return to_chars_<int64>(in, out);
+auto to_chars(int64 in, Span<char> &out, int base /* =10 */) -> Result<usize> {
+  switch (base) {
+  case BaseBin: return to_chars_<int64, 2> (in, out);
+  case BaseHex: return to_chars_<int64, 16>(in, out);
+  case BaseDec: return to_chars_<int64, 10>(in, out);
+  case BaseOct: return to_chars_<int64, 8> (in, out);
+  default: break;
+  }
+
+  return Error{"Invalid numerical base!", ErrC::InvalidArg};
 }
 
-auto to_chars(uint64 in, Span<char> &out /*, base=10 */) -> Result<usize> {
-  return to_chars_<uint64>(in, out);
+auto to_chars(uint64 in, Span<char> &out, int base /* =10 */) -> Result<usize> {
+  switch (base) {
+    case BaseBin: return to_chars_<uint64, 2> (in, out);
+    case BaseHex: return to_chars_<uint64, 16>(in, out);
+    case BaseDec: return to_chars_<uint64, 10>(in, out);
+    case BaseOct: return to_chars_<uint64, 8> (in, out);
+    default: break;
+  }
+
+  return Error{"Invalid numerical base!", ErrC::InvalidArg};
 }
 
 END_NAMESPACE(kcore);

@@ -5,7 +5,7 @@
 
 #include <Kernel/KCore/Assertions.hpp>
 #include <Kernel/Boot/VGAText.hpp>
-#include <Kernel/Serial/Print.hpp>
+#include <Kernel/Serial/SerialIO.hpp>
 BEGIN_NAMESPACE(kcore);
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-parameter"
@@ -22,9 +22,10 @@ auto __fatal_assertion(const char *msg) -> void {
   term.chcolour(VGAColour::Red, VGAColour::Black);
   term.putstring(msg);
 #elif QEMU_SERIAL_LOGGING_
-  SERIAL_PUTS("\n\033[31m");
-  SERIAL_PUTS(msg);
-  SERIAL_PUTS("\033[0m\nhanging...\n");
+  serial::com1_puts("\n\n\033[31m");
+  serial::com1_puts("\033[1m");
+  serial::com1_puts(msg);
+  serial::com1_puts("\033[0m\nhanging...\n");
 #endif
   __spin_forever();
 }

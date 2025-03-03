@@ -38,4 +38,9 @@ auto out32(uint16 port, uint32 value) -> void {
   asm volatile("outl %0, %1" :: "a"(value), "Nd"(port));
 }
 
+auto ignorant_delay(usize microsecs) -> void {
+  for(usize i = 0; i < microsecs; ++i)
+    UNUSED_ auto v = in8(0x80);
+}
+
 END_NAMESPACE(arch);

@@ -383,6 +383,7 @@ using kcore::AddRvalueReference;
 using kcore::VoidType;
 using kcore::IsTriviallyConstructible;
 using kcore::IsTriviallyDestructible;
+using kcore::IsCharacter;
 using kcore::RemoveCV;
 using kcore::IsPointer;
 using kcore::UnsignedT;

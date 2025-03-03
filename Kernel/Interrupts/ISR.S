@@ -56,7 +56,7 @@ isr_dispatch_stub:
 .set ISR_TABLE_MAGIC, 0xABFF00ABFF00ABFF
 .macro make_isr num
     isr_\num:
-.if !(\num == 8 || \num == 17 || \num == 21 || \num == 29 || \num == 30 || (\num >= 10 && \num <= 14))
+.if !(\num == 8 || (\num >= 10 && \num <= 14) || \num == 17 || \num == 21 || \num == 29 || \num == 30)
     pushq $0
 .endif
     pushq $\num

@@ -41,7 +41,7 @@ _start:
     cld  /* Clear direction flag */
 
     movq $stack_top, %rsp
-    call clear_pagetables
+    call clear_page_tables
 
     andq $0xFFFFFFFFFFFFFFF0, %rsp
     call kinit
@@ -55,26 +55,22 @@ halt:
     hlt
     jmp 1b
 
-clear_pagetables:
+clear_page_tables:
     movq $init_pml4, %rdi
-    movq $512, %rcx
-    xorq %rax, %rax
-    rep stosq
+    call clear_table
 
     movq $init_pdpt, %rdi
-    movq $512, %rcx
-    xorq %rax, %rax
-    rep stosq
+    call clear_table
 
     movq $init_pd, %rdi
-    movq $512, %rcx
-    xorq %rax, %rax
-    rep stosq
+    call clear_table
 
     movq $init_pt, %rdi
+    call clear_table
+    ret
+
+clear_table:
     movq $512, %rcx
     xorq %rax, %rax
     rep stosq
-
     ret
-

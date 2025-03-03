@@ -8,13 +8,14 @@
 #include <Kernel/KCore/Types.hpp>
 BEGIN_NAMESPACE(arch);
 
-NODISCARD_ auto in8 (uint16) -> uint8;
-NODISCARD_ auto in16(uint16) -> uint16;
-NODISCARD_ auto in32(uint16) -> uint32;
+NODISCARD_ auto in8 (uint16 port) -> uint8;
+NODISCARD_ auto in16(uint16 port) -> uint16;
+NODISCARD_ auto in32(uint16 port) -> uint32;
 
-auto out8 (uint16, uint8)    -> void;
-auto out16(uint16, uint16)   -> void;
-auto out32(uint16, uint32)   -> void;
+auto ignorant_delay(usize microsecs)  -> void;
+auto out8 (uint16 port, uint8 value)  -> void;
+auto out16(uint16 port, uint16 value) -> void;
+auto out32(uint16 port, uint32 value) -> void;
 
 END_NAMESPACE(arch);
 #endif //CALANTHA_ARCH_IO_HPP

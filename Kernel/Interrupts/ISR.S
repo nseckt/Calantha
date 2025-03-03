@@ -12,7 +12,7 @@
 isr_dispatch_stub:
     cld
 
-    ## Set up the interrupt frame
+    /* Set up the interrupt frame */
     pushq %rax
     pushq %rbx
     pushq %rcx
@@ -32,7 +32,7 @@ isr_dispatch_stub:
     movq %rsp, %rdi
     call calantha_interrupt_handler_
 
-    ## Restore registers.
+    /* Restore registers. */
     popq %r15
     popq %r14
     popq %r13

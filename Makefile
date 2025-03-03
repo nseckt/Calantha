@@ -25,12 +25,13 @@ TARGET      := build/calantha
 IMAGE       := build/calantha.iso
 ARCH        := x86_64
 
-CXX_FLAGS := -ffreestanding \
+CXX_FLAGS := -fno-strict-aliasing \
+	-fno-exceptions \
+	-fno-rtti
+
+SHARED_FLAGS := -ffreestanding \
 	-O2 -Wall -Wextra -Werror \
 	-fno-pie \
-	-fno-strict-aliasing \
-	-fno-exceptions \
-	-fno-rtti \
 	-fno-stack-protector \
 	-fno-stack-check \
 	-fno-PIC \
@@ -59,6 +60,7 @@ $(TARGET): $(CXX_OBJECTS) $(ASM_OBJECTS)
 		-T linker.ld \
 		-o $(TARGET) \
 		$(LD_FLAGS) \
+		$(SHARED_FLAGS) \
 		$(CXX_FLAGS) \
 		$(addprefix build/, $(notdir $(CXX_OBJECTS))) \
 		$(addprefix build/, $(notdir $(ASM_OBJECTS))) \
@@ -71,12 +73,17 @@ $(TARGET): $(CXX_OBJECTS) $(ASM_OBJECTS)
 		-DASSERTIONS_ENABLED_=$(OPT_ASSERTS_ON) \
 		-DBUILD_DEBUG_=$(OPT_BUILD_DEBUG) \
 		-I. -include Kernel/Misc/Global.hpp \
+		$(SHARED_FLAGS) \
 		$(CXX_FLAGS) \
 		-c $< \
 		-o build/$(notdir $@)
 
 %.o: %.S
-	$(AS) $< -o build/$(notdir $@)
+	$(CXX) \
+		-I. \
+		$(SHARED_FLAGS) \
+		-c $< \
+		-o build/$(notdir $@)
 
 clean:
 	rm -rf ./build

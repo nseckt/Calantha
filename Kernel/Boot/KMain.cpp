@@ -57,6 +57,6 @@ extern "C" NORETURN_ void kmain() {
     fb_ptr[i * (framebuffer->pitch / 4) + i] = 0xffffff;
   }
 
-  ///ASSERT(interrupt::Handler::init());
+  ASSERT(interrupt::Handler::init());
   __spin_forever();
 }

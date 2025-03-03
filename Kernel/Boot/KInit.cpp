@@ -19,6 +19,8 @@ extern "C" {
 extern void (*__init_array[])();
 extern void (*__init_array_end[])();
 
+extern "C" void load_gdt_impl_(uintptr gdtr);
+
 extern "C" void kinit() {
   for (usize i = 0; &__init_array[i] != __init_array_end; i++) {
     __init_array[i]();
@@ -38,15 +40,5 @@ extern "C" void kinit() {
 #endif
 
   gdt::init(cpu);
-  logln("- loaded GDT on bootstrap processor:");
   cpu->gdt.log();
-
-  logln(serial::RedFG);
-  cpu->gdt.kdata.access = 0x92;
-  if(cpu->gdt.kdata.access == 0x92) {
-    logln("ITS 0X92");
-  } else {
-    logln("ITS NOT 0x92!");
-  }
-  logln(serial::Reset);
 }

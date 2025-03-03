@@ -37,8 +37,8 @@ stack_top:
 .global _start
 .type _start, @function
 _start:
-    cli  ## Clear interrupt flag
-    cld  ## Clear direction flag
+    cli  /* Clear interrupt flag */
+    cld  /* Clear direction flag */
 
     movq $stack_top, %rsp
     call clear_pagetables

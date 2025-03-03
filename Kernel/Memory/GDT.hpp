@@ -66,12 +66,16 @@ struct PACKED_ Entries {
   auto log() -> void;
 };
 
-static_assert(__builtin_offsetof(Entries, null)  == SEG_NULL);
-static_assert(__builtin_offsetof(Entries, kcode) == SEG_KCODE);
-static_assert(__builtin_offsetof(Entries, kdata) == SEG_KDATA);
-static_assert(__builtin_offsetof(Entries, ucode) == SEG_UCODE);
-static_assert(__builtin_offsetof(Entries, udata) == SEG_UDATA);
-static_assert(__builtin_offsetof(Entries, tss)   == SEG_TSS);
+#if __has_builtin(__builtin_offsetof)
+  static_assert(__builtin_offsetof(Entries, kcode) == SEG_KCODE);
+  static_assert(__builtin_offsetof(Entries, kdata) == SEG_KDATA);
+  static_assert(__builtin_offsetof(Entries, ucode) == SEG_UCODE);
+  static_assert(__builtin_offsetof(Entries, udata) == SEG_UDATA);
+  static_assert(__builtin_offsetof(Entries, tss)   == SEG_TSS);
+#else
+# warning "Cannot verify GDT offsets..."
+#endif
+
 static_assert(sizeof(TSSEntry) == 16);
 static_assert(sizeof(Entry)    == 8);
 static_assert(sizeof(Pointer)  == 10);

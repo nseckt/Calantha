@@ -5,7 +5,7 @@
 
 #include <Kernel/Arch/Processor.hpp>
 BEGIN_NAMESPACE(arch);
-static constinit Processor bp_{};
+static constinit Processor bp_;
 
 auto Processor::early_init() -> void {
   bp_.index = 0x00; // Boot processor ID

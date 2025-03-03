@@ -9,12 +9,13 @@
 #include <Kernel/Memory/GDT.hpp>
 BEGIN_NAMESPACE(arch);
 
-struct PACKED_ Processor {
+struct Processor {
   constexpr Processor() = default;
   int64 index = -1;
-  mem::gdt::Entries gdt;
-  mem::gdt::Pointer ptr;
-  mem::gdt::TSS tss;
+  mem::gdt::Entries gdt{};
+  mem::gdt::Pointer ptr{};
+  mem::gdt::TSS tss{};
+
   static auto boot_processor()  -> Processor*;
   static auto early_init() -> void;
 };

@@ -3,12 +3,7 @@
 * SPDX-License-Identifier: BSD-3-Clause
 */
 
-.set SEG_NULL,  0x00
-.set SEG_KCODE, 0x08
-.set SEG_KDATA, 0x10
-.set SEG_UCODE, 0x18
-.set SEG_UDATA, 0x20
-.set SEG_TSS,   0x28
+#include <Kernel/Memory/SegmentConstants.h>
 
 .code64
 .section .text

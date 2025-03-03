@@ -6,6 +6,7 @@
 #ifndef CALANTHA_IHANDLER_HPP
 #define CALANTHA_IHANDLER_HPP
 #include <Kernel/KCore/Types.hpp>
+#include <Kernel/KCore/Result.hpp>
 BEGIN_NAMESPACE(interrupt);
 
 struct PACKED_ Frame {
@@ -33,6 +34,18 @@ struct PACKED_ Frame {
   uint64 ss;
 };
 
+class Handler {
+public:
+  NODISCARD_ static auto get()  -> Handler&;
+  NODISCARD_ static auto init() -> kcore::Result<void>;
+  constexpr Handler()  = default;
+private:
+  uintptr* stub_begin_ = nullptr;
+  uintptr* stub_end_   = nullptr;
+};
+
 static_assert(sizeof(Frame) == 176);
+extern constinit const char* g_exception_msgs[32];
+
 END_NAMESPACE(interrupt);
 #endif //CALANTHA_IHANDLER_HPP

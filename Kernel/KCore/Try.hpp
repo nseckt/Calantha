@@ -32,4 +32,8 @@
     if((EXPR)) { return ::kcore::Error{ __VA_ARGS__ }; }                           \
   } while(0)                                                                       \
 
+#define ERROR_IF_NOT(EXPR, ...) do {                                               \
+    if(!(EXPR)) { return ::kcore::Error{ __VA_ARGS__ }; }                          \
+  } while(0)                                                                       \
+
 #endif //CALANTHA_KCORE_TRY_HPP

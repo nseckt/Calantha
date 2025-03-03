@@ -5,8 +5,11 @@
 
 .code64
 
-.extern calantha_init
-.type calantha_init, @function
+.extern kmain
+.type kmain, @function
+
+.extern kinit
+.type kinit, @function
 
 /* Page table structures. */
 .section .page_tables, "aw", @nobits
@@ -29,26 +32,10 @@ stack_bottom:
 .skip 32768
 stack_top:
 
-/* Global Descriptor Table (GDT) */
-/* Null descriptor, 64 bit code segment. */
-.section .data
-gdt_start:
-.quad 0
-gdt64_code:
-.quad (1<<43) | (1<<44) | (1<<47) | (1<<53)
-.global gdt_ptr
-gdt_ptr:
-.short . - gdt_start - 1
-.quad gdt_start
-
-.set CODE64_SELECTOR_OFFSET, gdt64_code - gdt_start
-.global code64_selector
-code64_selector:
-.short CODE64_SELECTOR_OFFSET
 
 .section .text
 .global _start
-.type _start @function
+.type _start, @function
 _start:
     cli  ## Clear interrupt flag
     cld  ## Clear direction flag
@@ -56,14 +43,17 @@ _start:
     movq $stack_top, %rsp
     call clear_pagetables
 
-    movq $gdt_ptr, %rax
-    lgdt (%rax)
+    andq $0xFFFFFFFFFFFFFFF0, %rsp
+    call kinit
 
-    sub $16, %rsp
-    movq $CODE64_SELECTOR_OFFSET, 8(%rsp)
-    movabsq $longret_dest, %rax
-    mov %rax, (%rsp)
-    lretq
+    andq $0xFFFFFFFFFFFFFFF0, %rsp
+    call kmain
+
+halt:
+    cli
+1:
+    hlt
+    jmp 1b
 
 clear_pagetables:
     movq $init_pml4, %rdi
@@ -88,19 +78,3 @@ clear_pagetables:
 
     ret
 
-longret_dest:
-    mov $0, %ax
-    mov %ax, %ss
-    mov %ax, %ds
-    mov %ax, %es
-    mov %ax, %fs
-    mov %ax, %gs
-
-    andq $0xFFFFFFFFFFFFFFF0, %rsp
-    call calantha_init
-
-halt:
-    cli
-1:
-    hlt
-    jmp 1b

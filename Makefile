@@ -10,6 +10,11 @@ CC  = x86_64-elf-gcc
 CXX = x86_64-elf-g++
 LIM = limine
 
+OPT_QEMU_LOGGING = 1
+OPT_VGA_TEXTMODE = 0
+OPT_ASSERTS_ON   = 1
+OPT_BUILD_DEBUG  = 1
+
 CXX_SOURCES := $(shell find Kernel -type f -name "*.cpp")
 ASM_SOURCES := $(shell find Kernel -type f -name "*.S")
 HPP_SOURCES := $(shell find Kernel -type f -name "*.hpp")
@@ -61,6 +66,10 @@ $(TARGET): $(CXX_OBJECTS) $(ASM_OBJECTS)
 %.o: %.cpp
 	$(CXX) \
 		-std=c++23 \
+		-DQEMU_SERIAL_LOGGING_=$(OPT_QEMU_LOGGING) \
+		-DVGA_TEXTMODE_=$(OPT_VGA_TEXTMODE) \
+		-DASSERTIONS_ENABLED_=$(OPT_ASSERTS_ON) \
+		-DBUILD_DEBUG_=$(OPT_BUILD_DEBUG) \
 		-I. -include Kernel/Misc/Global.hpp \
 		$(CXX_FLAGS) \
 		-c $< \
@@ -114,17 +123,20 @@ setup:
 	# Generate a dummy CMakeLists build script.
 	# This is just so that code completion/clangd can function correctly for
 	# editors like Clion. we don't actually use Cmake for the build process.
+	# and NO, I will not use a compilation database. That shit does not work well.
 	echo 'cmake_minimum_required(VERSION 3.28)' > CMakeLists.txt
 	echo 'project(calantha)' >> CMakeLists.txt
 	echo 'set(CMAKE_CXX_STANDARD 23)' >> CMakeLists.txt
 	echo 'set(CMAKE_CXX_STANDARD_REQUIRED ON)' >> CMakeLists.txt
 
-	echo 'add_executable(DUMMY ' >> CMakeLists.txt
-	echo $(CXX_SOURCES) >> CMakeLists.txt
-	echo $(HPP_SOURCES) >> CMakeLists.txt
-	echo $(ASM_SOURCES) >> CMakeLists.txt
-	echo ')' >> CMakeLists.txt
+	echo 'add_executable(DUMMY $(CXX_SOURCES) $(HPP_SOURCES) $(ASM_SOURCES) )' >> CMakeLists.txt
 
 	echo 'target_include_directories(DUMMY PRIVATE $${CMAKE_CURRENT_SOURCE_DIR})' >> CMakeLists.txt
 	echo 'target_compile_options(DUMMY PRIVATE -include Kernel/Misc/Global.hpp)' >> CMakeLists.txt
+	echo 'target_compile_definitions(DUMMY PRIVATE ' >> CMakeLists.txt
 
+	echo 'QEMU_SERIAL_LOGGING_=$(OPT_QEMU_LOGGING)' >> CMakeLists.txt
+	echo 'VGA_TEXTMODE_=$(OPT_VGA_TEXTMODE)' >> CMakeLists.txt
+	echo 'ASSERTIONS_ENABLED_=$(OPT_ASSERTS_ON)' >> CMakeLists.txt
+	echo 'BUILD_DEBUG_=$(OPT_BUILD_DEBUG)' >> CMakeLists.txt
+	echo ' )' >> CMakeLists.txt

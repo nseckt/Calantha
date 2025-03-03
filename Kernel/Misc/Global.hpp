@@ -6,21 +6,20 @@
 #ifndef CALANTHA_GLOBAL_HPP
 #define CALANTHA_GLOBAL_HPP
 
-// Flags
-#define QEMU_SERIAL_LOGGING_ 1
-#define VGA_TEXTMODE_ 0
-#define ASSERTIONS_ENABLED_ 1
-
 #define BEGIN_NAMESPACE(NAME) namespace NAME {
 #define END_NAMESPACE(NAME) }
+
+#define BEGIN_ANONYMOUS_NAMESPACE() namespace {
+#define END_ANONYMOUS_NAMESPACE() }
 
 // Attribute macros
 #define NODISCARD_    [[nodiscard]]
 #define UNUSED_       [[maybe_unused]]
 #define NORETURN_     [[noreturn]]
 #define FALLTHROUGH_  [[fallthrough]]
+#define NAKED_        __attribute__((naked))
 #define PACKED_       __attribute__((packed))
-#define FORCEINLINE_  __attribute__((always_inline))
+#define FORCEINLINE_  __attribute__((always_inline)) inline
 #define NOINLINE_     __attribute__((noinline))
 
 #endif //CALANTHA_GLOBAL_HPP

@@ -36,4 +36,7 @@
     C(C&&) = delete;                                           \
     C& operator=(C&&) = delete                                 \
 
+#define CTA_DEFAULT_CMP(C)                                     \
+  public: auto operator<=>(const C&) const = default;          \
+
 #endif //CALANTHA_KCORE_CLASSTRAITS_HPP

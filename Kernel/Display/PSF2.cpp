@@ -19,9 +19,8 @@ auto Parser::create(const Span<uint8>& buff) -> Result<Parser> {
   const auto* header = ptr_cast<const Header>(buff.data());
   ERROR_IF(header->version_ != 0, ErrC::InvalidArg);
 
-  for(usize i = 0; i < length_of(Magic); ++i) {
+  for(usize i = 0; i < length_of(Magic); ++i)
     ERROR_IF(header->magic_[i] != Magic[i], ErrC::InvalidArg);
-  }
 
   return Parser{buff};
 }

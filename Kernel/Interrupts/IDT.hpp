@@ -6,6 +6,7 @@
 #ifndef CALANTHA_IDT_HPP
 #define CALANTHA_IDT_HPP
 #include <Kernel/KCore/Types.hpp>
+#include <Kernel/KCore/Result.hpp>
 BEGIN_NAMESPACE(interrupt::idt);
 
 struct PACKED_ Entry {

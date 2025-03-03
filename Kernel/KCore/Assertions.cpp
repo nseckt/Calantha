@@ -5,7 +5,7 @@
 
 #include <Kernel/KCore/Assertions.hpp>
 #include <Kernel/Boot/VGAText.hpp>
-#include <Kernel/Serial/SerialIO.hpp>
+#include <Kernel/Serial/Outs.hpp>
 BEGIN_NAMESPACE(kcore);
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-parameter"
@@ -16,12 +16,7 @@ auto __spin_forever() -> void {
 }
 
 auto __fatal_assertion(const char *msg) -> void {
-#if VGA_TEXTMODE_
-  auto term = VGATerm::create();
-  term.clearscr();
-  term.chcolour(VGAColour::Red, VGAColour::Black);
-  term.putstring(msg);
-#elif QEMU_SERIAL_LOGGING_
+#if QEMU_SERIAL_LOGGING_
   serial::com1_puts("\n\n\033[31m");
   serial::com1_puts("\033[1m");
   serial::com1_puts(msg);

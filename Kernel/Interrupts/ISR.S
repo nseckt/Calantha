@@ -53,6 +53,7 @@ isr_dispatch_stub:
     iretq
 
 
+.set ISR_TABLE_MAGIC, 0xABFF00ABFF00ABFF
 .macro make_isr num
     isr_\num:
 .if !(\num == 8 || \num == 17 || \num == 21 || \num == 29 || \num == 30 || (\num >= 10 && \num <= 14))
@@ -86,3 +87,4 @@ isr_table_start:
 
 .global isr_table_end
 isr_table_end:
+.quad ISR_TABLE_MAGIC

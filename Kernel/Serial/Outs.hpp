@@ -6,28 +6,30 @@
 #ifndef CALANTHA_SERIAL_IO_HPP
 #define CALANTHA_SERIAL_IO_HPP
 #include <Kernel/KCore/Types.hpp>
-#include <Kernel/Serial/Ports.hpp>
+#include <Kernel/Serial/COM.hpp>
+#include <Kernel/Arch/IO.hpp>
 #include <Kernel/KCore/CharConv.hpp>
 #include <Kernel/KCore/StringView.hpp>
 #include <Kernel/KCore/Concepts.hpp>
+#include <Kernel/KCore/TypeManip.hpp>
 BEGIN_NAMESPACE(serial);
 
-NODISCARD_ auto in8 (uint16)  -> uint8;
-NODISCARD_ auto in16(uint16)  -> uint16;
-NODISCARD_ auto in32(uint16)  -> uint32;
-
-auto out8 (uint16, uint8)     -> void;
-auto out16(uint16, uint16)    -> void;
-auto out32(uint16, uint32)    -> void;
-
-auto com1_init()              -> void;
-auto com1_puts(const char*)   -> void;
-auto com1_putch(char)         -> void;
+auto early_init()            -> void;
+auto com1_init()             -> void;
+auto com1_puts(const char*)  -> void;
+auto com1_putch(char)        -> void;
 
 class OStream {
 public:
   using Chars_  = kcore::StringView;
   using Port_   = uint16;
+
+  enum class Base : int {
+    Decimal     = 10,
+    Binary      = 2,
+    Hexadecimal = 16,
+    Octal       = 8,
+  };
 
   template<kcore::Signed Int>
   FORCEINLINE_ auto operator<<(const Int num) -> OStream& {
@@ -35,7 +37,7 @@ public:
     char buff[40]{};
 
     kcore::Span<char> span(buff);
-    if(kcore::to_chars(max_t, span).has_value()) {
+    if(kcore::to_chars(max_t, span, base_).has_value()) {
       buff[39] = '\0'; /// Ensure null termination
       put_chars(buff); /// Send buffer
     }
@@ -49,7 +51,7 @@ public:
     char buff[40]{};
 
     kcore::Span<char> span(buff);
-    if(kcore::to_chars(max_t, span).has_value()) {
+    if(kcore::to_chars(max_t, span, base_).has_value()) {
       buff[39] = '\0'; /// Ensure null termination
       put_chars(buff); /// Send buffer
     }
@@ -72,7 +74,12 @@ public:
   }
 
   FORCEINLINE_ auto put_chars(const Chars_& sv) -> OStream& {
-    for(usize i = 0; i < sv.size(); ++i) out8(port_, sv.at(i));
+    for(usize i = 0; i < sv.size(); ++i) arch::out8(port_, sv.at(i));
+    return *this;
+  }
+
+  FORCEINLINE_ auto operator<<(const Base base) -> OStream& {
+    base_ = static_cast<kcore::UnderlyingType<Base>>(base);
     return *this;
   }
 
@@ -81,7 +88,7 @@ public:
   }
 
   FORCEINLINE_ auto operator<<(char ch) -> OStream& {
-    out8(port_, ch);
+    arch::out8(port_, ch);
     return *this;
   }
 
@@ -89,6 +96,7 @@ public:
   constexpr OStream(Port_ port) : port_(port) {}
   constexpr OStream() = default;
 private:
+  int base_   = 10;
   Port_ port_ = COM1;
 };
 

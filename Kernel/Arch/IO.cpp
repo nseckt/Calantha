@@ -3,11 +3,10 @@
 * SPDX-License-Identifier: BSD-3-Clause
 */
 
-#include <Kernel/Serial/SerialIO.hpp>
-BEGIN_NAMESPACE(serial);
-
-constinit OStream outs;
-constinit OStream errs;
+#define USING_KCORE_GLOBALLY
+#include <Kernel/Arch/IO.hpp>
+#include <Kernel/Serial/COM.hpp>
+BEGIN_NAMESPACE(arch);
 
 auto in8(uint16 port) -> uint8 {
   uint8 value;
@@ -39,28 +38,4 @@ auto out32(uint16 port, uint32 value) -> void {
   asm volatile("outl %0, %1" :: "a"(value), "Nd"(port));
 }
 
-auto com1_init() -> void {
-  out8(COM1 + 1, 0x00);
-  out8(COM1 + 3, 0x80);
-  out8(COM1 + 0, 0x02);
-  out8(COM1 + 1, 0x00);
-  out8(COM1 + 3, 0x03);
-  out8(COM1 + 2, 0xC7);
-  out8(COM1 + 4, 0x0B);
-}
-
-auto com1_putch(const char ch) -> void {
-  while ((in8(COM1 + 5) & 0x20) == 0) {
-    asm volatile("nop");
-  }
-
-  out8(COM1, ch);
-}
-
-auto com1_puts(const char* str) -> void {
-  for(usize i = 0; i < kcore::kstrlen(str); i++)
-    com1_putch(str[i]);
-}
-
-END_NAMESPACE(serial);
-
+END_NAMESPACE(arch);

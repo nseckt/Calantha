@@ -40,8 +40,8 @@ auto VGATerm::clearscr() -> VGATerm& {
     }
   }
 
-  col_ = 0;        /// Reset row and column values.
-  row_ = 0;        ///
+  col_ = 0;
+  row_ = 0;
   return *this;
 }
 

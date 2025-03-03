@@ -19,8 +19,10 @@ using int16   = __INT16_TYPE__;
 using int8    = __INT8_TYPE__;
 using uintptr = __UINTPTR_TYPE__;
 using intptr  = __INTPTR_TYPE__;
+using ptrdiff = __PTRDIFF_TYPE__;
 using usize   = __SIZE_TYPE__;
 using byte    = uint8;
+using Epoch   = uint64;
 
 static_assert(sizeof(uintptr) == sizeof(void*));
 static_assert(sizeof(uintptr) == sizeof(uint64));

@@ -74,7 +74,7 @@ public:
     for(usize i = 0; i < sz_; i++) buff_[ i ] = kcore::move(arr[ i ]);
   }
 
-  template<AreAll<T> ...Args> requires(sizeof...(Args) == sz_)
+  template<AreAll<T> ...Args>
   FORCEINLINE_ constexpr Array(Args&&... args) : buff_(kcore::forward<Args>(args)...)  {}
 
   constexpr Array() = default;

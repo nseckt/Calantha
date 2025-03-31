@@ -1,2 +1,2 @@
 # Calantha
-The off-world kernel, for x86-64 architectures.
+The off-world kernel. For x86-64 architectures.

@@ -76,15 +76,15 @@ using U16StringView = StringView_<char16_t>;
 using U8StringView  = StringView_<char8_t>;
 END_NAMESPACE(kcore);
 
-inline auto operator "" _sv(const char* ptr, usize len) -> kcore::StringView {
+inline auto operator ""_sv(const char* ptr, usize len) -> kcore::StringView {
   return kcore::StringView{ ptr, len };
 }
 
-inline auto operator "" _sv(const char8_t* ptr, usize len) -> kcore::U8StringView {
+inline auto operator ""_sv(const char8_t* ptr, usize len) -> kcore::U8StringView {
   return kcore::U8StringView{ ptr, len };
 }
 
-inline auto operator "" _sv(const char16_t* ptr, usize len) -> kcore::U16StringView {
+inline auto operator ""_sv(const char16_t* ptr, usize len) -> kcore::U16StringView {
   return kcore::U16StringView{ ptr, len };
 }
 

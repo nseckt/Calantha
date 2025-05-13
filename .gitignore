@@ -25,6 +25,7 @@ qemu.log
 *.iso
 *.bin
 **/.DS_Store
+**/Thumbs.db
 cmake-build-*/
 **/.idea/
 **/.vscode/

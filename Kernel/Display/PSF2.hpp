@@ -3,8 +3,7 @@
 * SPDX-License-Identifier: BSD-3-Clause
 */
 
-#ifndef CALANTHA_PSF2_HPP
-#define CALANTHA_PSF2_HPP
+#pragma once
 #include <Kernel/KCore/Types.hpp>
 #include <Kernel/KCore/Span.hpp>
 #include <Kernel/KCore/Result.hpp>
@@ -35,4 +34,3 @@ private:
 };
 
 END_NAMESPACE(psf2);
-#endif //CALANTHA_PSF2_HPP

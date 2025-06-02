@@ -3,8 +3,7 @@
 * SPDX-License-Identifier: BSD-3-Clause
 */
 
-#ifndef CALANTHA_KCORE_CHARCONV_HPP
-#define CALANTHA_KCORE_CHARCONV_HPP
+#pragma once
 #include <Kernel/KCore/StringView.hpp>
 #include <Kernel/KCore/Types.hpp>
 #include <Kernel/KCore/Result.hpp>
@@ -38,7 +37,6 @@ constexpr auto isdigit(const char ch) -> bool {  /// Checks if a character is
 }
 
 END_NAMESPACE(kcore);
-#endif //CALANTHA_KCORE_CHARCONV_HPP
 #ifdef USING_KCORE_GLOBALLY
 using kcore::from_chars;
 using kcore::to_chars;

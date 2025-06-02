@@ -3,8 +3,7 @@
 * SPDX-License-Identifier: BSD-3-Clause
 */
 
-#ifndef CALANTHA_GDT_HPP
-#define CALANTHA_GDT_HPP
+#pragma once
 #include <Kernel/KCore/Types.hpp>
 #include <Kernel/Memory/SegmentConstants.h>
 
@@ -81,4 +80,3 @@ static_assert(sizeof(Entry)    == 8);
 static_assert(sizeof(Pointer)  == 10);
 
 END_NAMESPACE(mem::gdt);
-#endif //CALANTHA_GDT_HPP

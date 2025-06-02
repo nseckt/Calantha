@@ -3,8 +3,7 @@
 * SPDX-License-Identifier: BSD-3-Clause
 */
 
-#ifndef CALANTHA_BUMPALLOCATOR_HPP
-#define CALANTHA_BUMPALLOCATOR_HPP
+#pragma once
 #include <Kernel/Memory/AllocatorBase.hpp>
 #include <Kernel/KCore/Types.hpp>
 #include <Kernel/KCore/Memory.hpp>
@@ -52,4 +51,3 @@ private:
 };
 
 END_NAMESPACE(mem);
-#endif //CALANTHA_BUMPALLOCATOR_HPP

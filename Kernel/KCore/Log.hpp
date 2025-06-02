@@ -3,8 +3,7 @@
 * SPDX-License-Identifier: BSD-3-Clause
 */
 
-#ifndef CALANTHA_KCORE_LOG_HPP
-#define CALANTHA_KCORE_LOG_HPP
+#pragma once
 #include <Kernel/Serial/Outs.hpp>
 BEGIN_NAMESPACE(kcore);
 
@@ -62,7 +61,6 @@ FORCEINLINE_ auto setbase(LogBase b) -> void {
 }
 
 END_NAMESPACE(kcore);
-#endif //CALANTHA_KCORE_LOG_HPP
 #ifdef USING_KCORE_GLOBALLY
 using kcore::errln;
 using kcore::err;

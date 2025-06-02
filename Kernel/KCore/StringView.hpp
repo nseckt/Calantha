@@ -3,8 +3,7 @@
 * SPDX-License-Identifier: BSD-3-Clause
 */
 
-#ifndef CALANTHA_KCORE_STRINGVIEW_HPP
-#define CALANTHA_KCORE_STRINGVIEW_HPP
+#pragma once
 #include <Kernel/KCore/Memory.hpp>
 #include <Kernel/KCore/Iterator.hpp>
 #include <Kernel/KCore/Assertions.hpp>
@@ -88,7 +87,6 @@ inline auto operator ""_sv(const char16_t* ptr, usize len) -> kcore::U16StringVi
   return kcore::U16StringView{ ptr, len };
 }
 
-#endif //CALANTHA_KCORE_STRINGVIEW_HPP
 #ifdef USING_KCORE_GLOBALLY
 using kcore::StringView;
 using kcore::U16StringView;

@@ -3,8 +3,7 @@
 * SPDX-License-Identifier: BSD-3-Clause
 */
 
-#ifndef CALANTHA_HEAP_UNITS_HPP
-#define CALANTHA_HEAP_UNITS_HPP
+#pragma once
 #include <Kernel/KCore/Types.hpp>
 BEGIN_NAMESPACE(mem);
 
@@ -23,4 +22,3 @@ constexpr uint64 PB = 1000 * TB;
 constexpr uint64 EB = 1000 * PB;
 
 END_NAMESPACE(mem);
-#endif //CALANTHA_HEAP_UNITS_HPP

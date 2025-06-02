@@ -3,8 +3,7 @@
 * SPDX-License-Identifier: BSD-3-Clause
 */
 
-#ifndef CALANTHA_KCORE_TYPEMANIP_HPP
-#define CALANTHA_KCORE_TYPEMANIP_HPP
+#pragma once
 #include <Kernel/KCore/TypeTraits.hpp>
 BEGIN_NAMESPACE(kcore);
 
@@ -35,7 +34,6 @@ NODISCARD_ constexpr auto cref(T&& obj) -> const RemoveReference<T>& {
 }
 
 END_NAMESPACE(kcore);
-#endif //CALANTHA_KCORE_TYPEMANIP_HPP
 #ifdef USING_KCORE_GLOBALLY
 using kcore::to_underlying;
 using kcore::forward;

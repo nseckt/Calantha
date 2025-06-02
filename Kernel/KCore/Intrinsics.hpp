@@ -3,8 +3,7 @@
 * SPDX-License-Identifier: BSD-3-Clause
 */
 
-#ifndef CALANTHA_KCORE_INTRINSICS_HPP
-#define CALANTHA_KCORE_INTRINSICS_HPP
+#pragma once
 
 /// stddef.h and stdint.h are assumed to be
 /// freestanding compatible.
@@ -23,5 +22,3 @@ extern "C" {
   void* memmove(void *dest, const void *src, size_t n);
   int memcmp(const void *s1, const void *s2, size_t n);
 }
-
-#endif //CALANTHA_KCORE_INTRINSICS_HPP

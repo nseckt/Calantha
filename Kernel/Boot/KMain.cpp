@@ -7,11 +7,10 @@
 #include <Kernel/Kcore/Types.hpp>
 #include <Kernel/KCore/Assertions.hpp>
 #include <Kernel/Vendor/limine.h>
-#include <Kernel/KCore/Result.hpp>
 #include <Kernel/KCore/Log.hpp>
 #include <Kernel/KCore/Intrinsics.hpp>
-#include <Kernel/KCore/Try.hpp>
-#include <Kernel/Arch/RTC.hpp>
+#include <Kernel/KCore/StringView.hpp>
+#include <Kernel/KCore/Tuple.hpp>
 #include <Kernel/Interrupts/ISRHandler.hpp>
 
 namespace {

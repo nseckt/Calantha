@@ -3,8 +3,7 @@
 * SPDX-License-Identifier: BSD-3-Clause
 */
 
-#ifndef CALANTHA_KCORE_CLASSTRAITS_HPP
-#define CALANTHA_KCORE_CLASSTRAITS_HPP
+#pragma once
 
 #define CTA_MAKE_COMPARABLE_IMPL_(OP, MB, CLASS)               \
   bool operator OP (const CLASS& other) const {                \
@@ -39,4 +38,3 @@
 #define CTA_DEFAULT_CMP(C)                                     \
   public: auto operator<=>(const C&) const = default;          \
 
-#endif //CALANTHA_KCORE_CLASSTRAITS_HPP

@@ -3,8 +3,7 @@
 * SPDX-License-Identifier: BSD-3-Clause
 */
 
-#ifndef CALANTHA_MMU_HPP
-#define CALANTHA_MMU_HPP
+#pragma once
 #include <Kernel/Kcore/Types.hpp>
 BEGIN_NAMESPACE(mem);
 
@@ -35,4 +34,3 @@ NODISCARD_ auto get_page_indices(void*)   -> PageIndices;
 NODISCARD_ auto get_page_indices(uintptr) -> PageIndices;
 
 END_NAMESPACE(mem);
-#endif //CALANTHA_MMU_HPP

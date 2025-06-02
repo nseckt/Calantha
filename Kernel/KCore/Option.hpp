@@ -3,8 +3,7 @@
 * SPDX-License-Identifier: BSD-3-Clause
 */
 
-#ifndef CALANTHA_KCORE_OPTION_HPP
-#define CALANTHA_KCORE_OPTION_HPP
+#pragma once
 #include <Kernel/KCore/Types.hpp>
 #include <Kernel/KCore/TypeManip.hpp>
 #include <Kernel/KCore/Concepts.hpp>
@@ -136,7 +135,6 @@ private:
 };
 
 END_NAMESPACE(kcore);
-#endif //CALANTHA_KCORE_OPTION_HPP
 #ifdef USING_KCORE_GLOBALLY
 using kcore::Option;
 using kcore::None;

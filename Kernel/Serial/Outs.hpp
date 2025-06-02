@@ -3,8 +3,7 @@
 * SPDX-License-Identifier: BSD-3-Clause
 */
 
-#ifndef CALANTHA_SERIAL_IO_HPP
-#define CALANTHA_SERIAL_IO_HPP
+#pragma once
 #include <Kernel/KCore/Types.hpp>
 #include <Kernel/Serial/COM.hpp>
 #include <Kernel/Arch/IO.hpp>
@@ -14,10 +13,10 @@
 #include <Kernel/KCore/TypeManip.hpp>
 BEGIN_NAMESPACE(serial);
 
-auto early_init()            -> void;
-auto com1_init()             -> void;
-auto com1_puts(const char*)  -> void;
-auto com1_putch(char)        -> void;
+auto early_init()           -> void;
+auto com1_init()            -> void;
+auto com1_puts(const char*) -> void;
+auto com1_putch(char)       -> void;
 
 class OStream {
 public:
@@ -119,4 +118,3 @@ constexpr char WhiteFG[]   = "\033[37m";
 constexpr char RedFG[]     = "\033[91m";
 
 END_NAMESPACE(serial);
-#endif //CALANTHA_SERIAL_IO_HPP

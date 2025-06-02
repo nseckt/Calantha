@@ -3,8 +3,7 @@
 * SPDX-License-Identifier: BSD-3-Clause
 */
 
-#ifndef CALANTHA_KCORE_CONCEPTS_HPP
-#define CALANTHA_KCORE_CONCEPTS_HPP
+#pragma once
 #include <Kernel/KCore/TypeTraits.hpp>
 BEGIN_NAMESPACE(kcore);
 
@@ -48,7 +47,6 @@ template<typename T, typename ...Args>
 concept Constructs = IsDestructible<T> && IsConstructible<T, Args...>;
 
 END_NAMESPACE(kcore);
-#endif //CALANTHA_KCORE_CONCEPTS_HPP
 #ifdef USING_KCORE_GLOBALLY
 using kcore::AreAll;
 using kcore::AnyOf;

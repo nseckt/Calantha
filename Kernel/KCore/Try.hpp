@@ -3,14 +3,9 @@
 * SPDX-License-Identifier: BSD-3-Clause
 */
 
-#ifndef CALANTHA_KCORE_TRY_HPP
-#define CALANTHA_KCORE_TRY_HPP
+#pragma once
 #include <Kernel/KCore/TypeTraits.hpp>
 #include <Kernel/KCore/Assertions.hpp>
-
-#ifndef CALANTHA_KCORE_RESULT_HPP
-#warning "Try.hpp depends on kcore::Result<T>!"
-#endif
 
 #define TRY(EXPR)                                                                  \
   ({                                                                               \
@@ -36,4 +31,3 @@
     if(!(EXPR)) { return ::kcore::Error{ __VA_ARGS__ }; }                          \
   } while(0)                                                                       \
 
-#endif //CALANTHA_KCORE_TRY_HPP

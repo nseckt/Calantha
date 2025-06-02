@@ -3,8 +3,7 @@
 * SPDX-License-Identifier: BSD-3-Clause
 */
 
-#ifndef CALANTHA_KCORE_TYPETRAITS_HPP
-#define CALANTHA_KCORE_TYPETRAITS_HPP
+#pragma once
 BEGIN_NAMESPACE(kcore);
 
 template<typename...>
@@ -362,7 +361,6 @@ template<typename T>
 inline constexpr bool IsVoidPtr = IsPointer<T> && !IsCharacter<RemovePointer<T>>;
 
 END_NAMESPACE(kcore);
-#endif //CALANTHA_KCORE_TYPETRAITS_HPP
 #ifdef USING_KCORE_GLOBALLY
 using kcore::Decay;
 using kcore::AddConst;

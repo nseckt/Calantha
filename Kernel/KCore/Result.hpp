@@ -3,8 +3,7 @@
 * SPDX-License-Identifier: BSD-3-Clause
 */
 
-#ifndef CALANTHA_KCORE_RESULT_HPP
-#define CALANTHA_KCORE_RESULT_HPP
+#pragma once
 #include <Kernel/KCore/ClassTraits.hpp>
 #include <Kernel/KCore/Types.hpp>
 #include <Kernel/Kcore/Concepts.hpp>
@@ -120,7 +119,6 @@ template<typename T>
 using Result = typename ResultDispatch_<T>::Type;
 
 END_NAMESPACE(kcore);
-#endif //CALANTHA_KCORE_RESULT_HPP
 #ifdef USING_KCORE_GLOBALLY
 using kcore::Result;
 using kcore::ErrC;

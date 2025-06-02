@@ -3,8 +3,7 @@
 * SPDX-License-Identifier: BSD-3-Clause
 */
 
-#ifndef CALANTHA_KCORE_TYPES_HPP
-#define CALANTHA_KCORE_TYPES_HPP
+#pragma once
 
 // Note: do not place these
 // inside of the kcore namespace.
@@ -27,5 +26,3 @@ using Epoch   = uint64;
 static_assert(sizeof(uintptr) == sizeof(void*));
 static_assert(sizeof(uintptr) == sizeof(uint64));
 static_assert(sizeof(byte) == 1);
-
-#endif //CALANTHA_TYPES_HPP

@@ -3,8 +3,7 @@
 * SPDX-License-Identifier: BSD-3-Clause
 */
 
-#ifndef CALANTHA_ALLOCATORBASE_HPP
-#define CALANTHA_ALLOCATORBASE_HPP
+#pragma once
 #include <Kernel/KCore/Types.hpp>
 #include <Kernel/KCore/TypeManip.hpp>
 #include <Kernel/KCore/Result.hpp>
@@ -34,4 +33,3 @@ public:
 };
 
 END_NAMESPACE(mem);
-#endif //CALANTHA_ALLOCATORBASE_HPP

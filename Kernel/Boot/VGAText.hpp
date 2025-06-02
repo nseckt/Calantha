@@ -3,8 +3,7 @@
 * SPDX-License-Identifier: BSD-3-Clause
 */
 
-#ifndef CALANTHA_VGATEXT_HPP
-#define CALANTHA_VGATEXT_HPP
+#pragma once
 
 #if VGA_TEXTMODE_
 #include <Kernel/KCore/Types.hpp>
@@ -60,4 +59,3 @@ private:
 };
 
 #endif //VGA_TEXTMODE_
-#endif //CALANTHA_VGATEXT_HPP

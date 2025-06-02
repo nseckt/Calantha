@@ -3,8 +3,7 @@
 * SPDX-License-Identifier: BSD-3-Clause
 */
 
-#ifndef CALANTHA_KCORE_ITERATOR_HPP
-#define CALANTHA_KCORE_ITERATOR_HPP
+#pragma once
 #include <Kernel/KCore/TypeManip.hpp>
 BEGIN_NAMESPACE(kcore);
 
@@ -62,7 +61,6 @@ protected:
 };
 
 END_NAMESPACE(kcore);
-#endif //CALANTHA_KCORE_ITERATOR_HPP
 #ifdef USING_KCORE_GLOBALLY
 using kcore::ContiguousIterator;
 #endif //USING_KCORE_GLOBALLY

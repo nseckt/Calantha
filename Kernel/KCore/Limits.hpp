@@ -3,8 +3,7 @@
 * SPDX-License-Identifier: BSD-3-Clause
 */
 
-#ifndef CALANTHA_KCORE_LIMITS_HPP
-#define CALANTHA_KCORE_LIMITS_HPP
+#pragma once
 #include <Kernel/KCore/Types.hpp>
 BEGIN_NAMESPACE(kcore);
 
@@ -84,7 +83,6 @@ struct NumericLimits<bool> {
 };
 
 END_NAMESPACE(kcore);
-#endif //CALANTHA_KCORE_LIMITS_HPP
 #ifdef USING_KCORE_GLOBALLY
 using kcore::NumericLimits;
 #endif //USING_KCORE_GLOBALLY

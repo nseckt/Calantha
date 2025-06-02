@@ -3,8 +3,7 @@
 * SPDX-License-Identifier: BSD-3-Clause
 */
 
-#ifndef CALANTHA_KCORE_SPAN_HPP
-#define CALANTHA_KCORE_SPAN_HPP
+#pragma once
 #include <Kernel/KCore/Types.hpp>
 #include <Kernel/KCore/TypeManip.hpp>
 #include <Kernel/KCore/Iterator.hpp>
@@ -73,7 +72,6 @@ protected:
 };
 
 END_NAMESPACE(kcore);
-#endif //CALANTHA_KCORE_SPAN_HPP
 #ifdef USING_KCORE_GLOBALLY
 using kcore::Span;
 #endif //USING_KCORE_GLOBALLY

@@ -3,8 +3,7 @@
 * SPDX-License-Identifier: BSD-3-Clause
 */
 
-#ifndef CALANTHA_KCORE_MEMORY_HPP
-#define CALANTHA_KCORE_MEMORY_HPP
+#pragma once
 #include <Kernel/KCore/Types.hpp>
 #include <Kernel/KCore/Concepts.hpp>
 #include <Kernel/KCore/TypeManip.hpp>
@@ -76,7 +75,6 @@ NODISCARD_ auto difference(void* start, void* end) -> usize;
 NODISCARD_ auto checked_align_up(usize align, usize size, void*& ptr, usize& space) -> void*;
 
 END_NAMESPACE(kcore);
-#endif //CALANTHA_KCORE_MEMORY_HPP
 #ifdef USING_KCORE_GLOBALLY
 using kcore::launder;
 using kcore::ptr_cast;
